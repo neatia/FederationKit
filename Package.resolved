@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "lemmykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pexavc/LemmyKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "43cc856ce27ea098bdd0dbf8911a145eceb7dea1"
+      }
+    },
+    {
+      "identity" : "mastodonkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pexavc/MastodonKit",
+      "state" : {
+        "branch" : "master",
+        "revision" : "0cda818f0bd0f4d62e882c09d2815219001a04d4"
+      }
+    }
+  ],
+  "version" : 2
+}
