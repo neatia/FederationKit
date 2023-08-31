@@ -23,7 +23,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "FederationKit",
-            dependencies: ["LemmyKit"]),
+            dependencies: ["LemmyKit", "MastodonKit"]),
         .executableTarget(name: "FederationExecutable",
                           dependencies: ["FederationKit"]),
         .testTarget(

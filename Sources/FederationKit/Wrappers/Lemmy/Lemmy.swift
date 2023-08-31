@@ -18,7 +18,8 @@ extension FederatedInstances {
 
 extension Instance {
     var federated: FederatedInstance {
-        .init(.lemmy, id: self.id,
+        .init(.lemmy,
+              id: self.id.asString,
               domain: self.domain,
               published: self.published,
               updated: self.updated,
@@ -159,7 +160,11 @@ extension GetRepliesResponse {
 
 extension CommentReply {
     var federated: FederatedCommentReply {
-        .init(id: self.id, recipient_id: self.recipient_id, comment_id: self.comment_id, read: self.read, published: self.published)
+        .init(id: self.id.asString,
+              recipient_id: self.recipient_id.asString,
+              comment_id: self.comment_id.asString,
+              read: self.read,
+              published: self.published)
     }
 }
 extension CommentReplyView {
@@ -180,15 +185,25 @@ extension CommentReplyView {
 
 extension PersonMentionView {
     var federated: FederatedPersonMentionResource {
-        .init(person_mention: self.person_mention.federated, comment: self.comment.federated, creator: self.creator.federated, post: self.post.federated, community: self.community.federated, recipient: self.recipient.federated, counts: self.counts.federated, creator_banned_from_community: self.creator_banned_from_community, subscribed: self.subscribed.federated, saved: self.saved, creator_blocked: self.creator_blocked)
+        .init(person_mention: self.person_mention.federated,
+              comment: self.comment.federated,
+              creator: self.creator.federated,
+              post: self.post.federated,
+              community: self.community.federated,
+              recipient: self.recipient.federated,
+              counts: self.counts.federated,
+              creator_banned_from_community: self.creator_banned_from_community,
+              subscribed: self.subscribed.federated,
+              saved: self.saved,
+              creator_blocked: self.creator_blocked)
     }
 }
 
 extension PersonMention {
     var federated: FederatedPersonMention {
-        .init(id: self.id,
-              recipient_id: self.recipient_id,
-              comment_id: self.comment_id,
+        .init(id: self.id.asString,
+              recipient_id: self.recipient_id.asString,
+              comment_id: self.comment_id.asString,
               read: self.read,
               published: self.published)
     }
@@ -223,7 +238,7 @@ extension SortType {
 
 extension FederatedCommunity {
     public var lemmy: Community {
-        .init(id: self.id,
+        .init(id: self.id.asInt,
               name: self.name,
               title: self.title,
               description: self.description,
@@ -240,15 +255,15 @@ extension FederatedCommunity {
               inbox_url: self.inbox_url,
               hidden: self.hidden,
               posting_restricted_to_mods: self.posting_restricted_to_mods,
-              instance_id: self.instance_id)
+              instance_id: self.instance_id.asInt)
     }
 }
 
 extension FederatedComment {
     public var lemmy: Comment {
-        .init(id: self.id,
-              creator_id: self.creator_id,
-              post_id: self.post_id,
+        .init(id: self.id.asInt,
+              creator_id: self.creator_id.asInt,
+              post_id: self.post_id.asInt,
               content: self.content,
               removed: self.removed,
               published: self.published,
@@ -264,12 +279,12 @@ extension FederatedComment {
 
 extension FederatedPost {
     public var lemmy: Post {
-        .init(id: self.id,
+        .init(id: self.id.asInt,
               name: self.name,
               url: self.url,
               body: self.body,
-              creator_id: self.creator_id,
-              community_id: self.community_id,
+              creator_id: self.creator_id.asInt,
+              community_id: self.community_id.asInt,
               removed: self.removed,
               locked: self.locked,
               published: self.published,
@@ -290,7 +305,7 @@ extension FederatedPost {
 
 extension FederatedPerson {
     public var lemmy: Person {
-        .init(id: self.id,
+        .init(id: self.id.asInt,
               name: self.name,
               display_name: self.display_name,
               avatar: self.avatar,
@@ -307,7 +322,7 @@ extension FederatedPerson {
               admin: self.admin,
               bot_account: self.bot_account,
               ban_expires: self.ban_expires,
-              instance_id: self.instance_id)
+              instance_id: self.instance_id.asInt)
     }
 }
 
@@ -347,52 +362,3 @@ extension FederatedLocationType {
         }
     }
 }
-
-//
-//extension CommunityView: FederatedCommunity {
-//    var id: String {
-//        self.community.actor_id+"\(self.community.id)"
-//    }
-//
-//    var displayName: String {
-//        self.community.displayName
-//    }
-//
-//    var lemmy: CommunityView? {
-//        self
-//    }
-//
-//    var instanceType: FederatedInstanceType {
-//        .lemmy
-//    }
-//
-//    var actor_id: String {
-//        self.community.actor_id
-//    }
-//}
-//
-//extension Community: FederatedCommunityCompact {
-//    var displayName: String {
-//        "!"+self.name+"@"+self.actor_id.host
-//    }
-//}
-//
-//extension Instance: FederatedInstance {
-//    public var instanceType: FederatedInstanceType {
-//        .lemmy
-//    }
-//}
-//
-//extension Person : FederatedPerson {
-//    var id: String {
-//        self.actor_id + self.username
-//    }
-//
-//    var username: String {
-//        self.name + "@" + self.actor_id.host
-//    }
-//
-//    var instanceType: FederatedInstanceType {
-//        .lemmy
-//    }
-//}

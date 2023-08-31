@@ -27,9 +27,9 @@ extension CommentView {
 
 extension Comment {
     public var federated: FederatedComment {
-        .init(id: self.id,
-              creator_id: self.creator_id,
-              post_id: self.post_id,
+        .init(id: self.id.asString,
+              creator_id: self.creator_id.asString,
+              post_id: self.post_id.asString,
               content: self.content,
               removed: self.removed,
               published: self.published,
@@ -39,14 +39,15 @@ extension Comment {
               local: self.local,
               path: self.path,
               distinguished: self.distinguished,
-              language_id: self.language_id)
+              language_id: self.language_id,
+              instanceType: .lemmy)
     }
 }
 
 extension CommentAggregates {
     public var federated: FederatedCommentAggregates {
-        .init(id: self.id,
-              comment_id: self.comment_id,
+        .init(id: self.id.asString,
+              comment_id: self.comment_id.asString,
               score: self.score,
               upvotes: self.upvotes,
               downvotes: self.downvotes,
@@ -67,7 +68,7 @@ extension PersonView {
 
 extension Person {
     public var federated: FederatedPerson {
-        .init(id: self.id,
+        .init(id: self.id.asString,
               name: self.name,
               display_name: self.display_name,
               avatar: self.avatar,
@@ -84,14 +85,15 @@ extension Person {
               admin: self.admin,
               bot_account: self.bot_account,
               ban_expires: self.ban_expires,
-              instance_id: self.instance_id)
+              instance_id: self.instance_id.asString,
+              instanceType: .lemmy)
     }
 }
 
 extension PersonAggregates {
     public var federated: FederatedPersonAggregates {
-        .init(id: self.id,
-              person_id: self.person_id,
+        .init(id: self.id.asString,
+              person_id: self.person_id.asString,
               post_count: self.post_count,
               post_score: self.post_score,
               comment_count: self.comment_count,
@@ -118,12 +120,12 @@ extension PostView {
 
 extension Post {
     public var federated: FederatedPost {
-        .init(id: self.id,
+        .init(id: self.id.asString,
               name: self.name,
               url: self.url,
               body: self.body,
-              creator_id: self.creator_id,
-              community_id: self.community_id,
+              creator_id: self.creator_id.asString,
+              community_id: self.community_id.asString,
               removed: self.removed,
               locked: self.locked,
               published: self.published,
@@ -138,14 +140,15 @@ extension Post {
               embed_video_url: self.embed_video_url,
               language_id: self.language_id,
               featured_community: self.featured_community,
-              featured_local: self.featured_local)
+              featured_local: self.featured_local,
+              instanceType: .lemmy)
     }
 }
 
 extension PostAggregates {
     public var federated: FederatedPostAggregates {
-        .init(id: self.id,
-              post_id: self.post_id,
+        .init(id: self.id.asString,
+              post_id: self.post_id.asString,
               comments: self.comments,
               score: self.score,
               upvotes: self.upvotes,
@@ -173,7 +176,7 @@ extension CommunityView {
 
 extension Community {
     public var federated: FederatedCommunity {
-        .init(id: self.id,
+        .init(id: self.id.asString,
               name: self.name,
               title: self.title,
               description: self.description,
@@ -190,13 +193,13 @@ extension Community {
               inbox_url: self.inbox_url,
               hidden: self.hidden,
               posting_restricted_to_mods: self.posting_restricted_to_mods,
-              instance_id: self.instance_id)
+              instance_id: self.instance_id.asString)
     }
 }
 
 extension CommunityAggregates {
     public var federated: FederatedCommunityAggregates {
-        .init(id: self.id,
+        .init(id: self.id.asString,
               community_id: self.community_id,
               subscribers: self.subscribers,
               posts: self.posts,

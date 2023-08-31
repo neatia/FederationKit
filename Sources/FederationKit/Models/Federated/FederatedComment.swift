@@ -73,9 +73,9 @@ extension FederatedCommentResource: Identifiable {
 }
 
 public struct FederatedComment: Codable, Identifiable, Hashable {
-    public let id: Int
-    public let creator_id: Int
-    public let post_id: Int
+    public let id: String
+    public let creator_id: String
+    public let post_id: String
     public let content: String
     public let removed: Bool
     public let published: String
@@ -86,11 +86,12 @@ public struct FederatedComment: Codable, Identifiable, Hashable {
     public let path: String
     public let distinguished: Bool
     public let language_id: Int
+    public let instanceType: FederatedInstanceType
     
     public init(
-        id: Int,
-        creator_id: Int,
-        post_id: Int,
+        id: String,
+        creator_id: String,
+        post_id: String,
         content: String,
         removed: Bool,
         published: String,
@@ -100,7 +101,8 @@ public struct FederatedComment: Codable, Identifiable, Hashable {
         local: Bool,
         path: String,
         distinguished: Bool,
-        language_id: Int
+        language_id: Int,
+        instanceType: FederatedInstanceType
     ) {
         self.id = id
         self.creator_id = creator_id
@@ -115,12 +117,13 @@ public struct FederatedComment: Codable, Identifiable, Hashable {
         self.path = path
         self.distinguished = distinguished
         self.language_id = language_id
+        self.instanceType = instanceType
     }
 }
 
 public struct FederatedCommentAggregates: Codable, Identifiable, Hashable {
-    public let id: Int
-    public let comment_id: CommentId
+    public let id: String
+    public let comment_id: String
     public let score: Int
     public let upvotes: Int
     public let downvotes: Int
@@ -129,8 +132,8 @@ public struct FederatedCommentAggregates: Codable, Identifiable, Hashable {
     public let hot_rank: Int
 
     public init(
-        id: Int,
-        comment_id: CommentId,
+        id: String,
+        comment_id: String,
         score: Int,
         upvotes: Int,
         downvotes: Int,
@@ -193,16 +196,16 @@ public struct FederatedCommentReplyResource: Codable, Hashable {
 }
 
 public struct FederatedCommentReply: Codable, Identifiable, Hashable {
-    public let id: Int
-    public let recipient_id: Int
-    public let comment_id: Int
+    public let id: String
+    public let recipient_id: String
+    public let comment_id: String
     public let read: Bool
     public let published: String
 
     public init(
-        id: Int,
-        recipient_id: Int,
-        comment_id: Int,
+        id: String,
+        recipient_id: String,
+        comment_id: String,
         read: Bool,
         published: String
     ) {

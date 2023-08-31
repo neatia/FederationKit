@@ -46,12 +46,12 @@ public struct FederatedPostResource: Codable, Hashable {
 }
 
 public struct FederatedPost: Codable, Identifiable, Hashable {
-    public let id: Int
+    public let id: String
     public let name: String
     public let url: String?
     public let body: String?
-    public let creator_id: Int
-    public let community_id: Int
+    public let creator_id: String
+    public let community_id: String
     public let removed: Bool
     public let locked: Bool
     public let published: String
@@ -67,14 +67,15 @@ public struct FederatedPost: Codable, Identifiable, Hashable {
     public let language_id: Int
     public let featured_community: Bool
     public let featured_local: Bool
+    public let instanceType: FederatedInstanceType
     
     public init(
-        id: Int,
+        id: String,
         name: String,
         url: String? = nil,
         body: String? = nil,
-        creator_id: Int,
-        community_id: Int,
+        creator_id: String,
+        community_id: String,
         removed: Bool,
         locked: Bool,
         published: String,
@@ -89,7 +90,8 @@ public struct FederatedPost: Codable, Identifiable, Hashable {
         embed_video_url: String? = nil,
         language_id: Int,
         featured_community: Bool,
-        featured_local: Bool
+        featured_local: Bool,
+        instanceType: FederatedInstanceType
     ) {
         self.id = id
         self.name = name
@@ -112,12 +114,13 @@ public struct FederatedPost: Codable, Identifiable, Hashable {
         self.language_id = language_id
         self.featured_community = featured_community
         self.featured_local = featured_local
+        self.instanceType = instanceType
     }
 }
 
 public struct FederatedPostAggregates: Codable, Identifiable, Hashable {
-    public let id: Int
-    public let post_id: Int
+    public let id: String
+    public let post_id: String
     public let comments: Int
     public let score: Int
     public let upvotes: Int
@@ -129,10 +132,11 @@ public struct FederatedPostAggregates: Codable, Identifiable, Hashable {
     public let featured_local: Bool
     public let hot_rank: Int
     public let hot_rank_active: Int
+    public let reblog_count: Int
 
     public init(
-        id: Int,
-        post_id: Int,
+        id: String,
+        post_id: String,
         comments: Int,
         score: Int,
         upvotes: Int,
@@ -143,7 +147,8 @@ public struct FederatedPostAggregates: Codable, Identifiable, Hashable {
         featured_community: Bool,
         featured_local: Bool,
         hot_rank: Int,
-        hot_rank_active: Int
+        hot_rank_active: Int,
+        reblog_count: Int = 0
     ) {
         self.id = id
         self.post_id = post_id
@@ -158,5 +163,6 @@ public struct FederatedPostAggregates: Codable, Identifiable, Hashable {
         self.featured_local = featured_local
         self.hot_rank = hot_rank
         self.hot_rank_active = hot_rank_active
+        self.reblog_count = reblog_count
     }
 }

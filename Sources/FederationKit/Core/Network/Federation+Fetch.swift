@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 
+import MastodonKit
+
 //MARK: -- Fetch
 
 public extension Federation {
@@ -47,12 +49,12 @@ public extension Federation {
                                       location: location?.lemmy)?.federated
     }
     
-    static func community(_ id: Int? = nil,
+    static func community(_ id: String? = nil,
                           community: FederatedCommunity? = nil,
                           name: String? = nil,
                           auth: String? = nil,
                           location: FederatedLocationType? = nil) async -> FederatedCommunityResource? {
-        return await shared.community(id ?? community?.id,
+        return await shared.community(id?.asInt ?? community?.id.asInt,
                                       name: name ?? community?.name,
                                       auth: auth,
                                       location: location)
@@ -65,10 +67,10 @@ public extension Federation {
                                  comment: comment?.lemmy,
                                  auth: auth)?.federated
     }
-    static func post(_ postId: Int? = nil,
+    static func post(_ postId: String? = nil,
                      comment: FederatedComment? = nil,
                      auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.post(postId, comment: comment, auth: auth)
+        return await shared.post(postId?.asInt, comment: comment, auth: auth)
     }
     
     func posts(_ community: FederatedCommunity? = nil,
@@ -80,18 +82,27 @@ public extension Federation {
                sort: FederatedSortType? = nil,
                auth: String? = nil,
                saved_only: Bool? = nil,
-               location: FederatedLocationType? = nil) async -> [FederatedPostResource] {
+               location: FederatedLocationType? = nil,
+               instanceType: FederatedInstanceType? = nil) async -> [FederatedPostResource] {
         
-        return await lemmy?.posts(community?.lemmy,
-                                  id: id,
-                                  name: name,
-                                  type: type.lemmy,
-                                  page: page,
-                                  limit: limit,
-                                  sort: sort?.lemmy,
-                                  auth: auth,
-                                  saved_only: saved_only,
-                                  location: location?.lemmy).compactMap { $0.federated } ?? []
+        switch (instanceType ?? currentServer?.type) {
+        case .lemmy:
+            return await lemmy?.posts(community?.lemmy,
+                                      id: id,
+                                      name: name,
+                                      type: type.lemmy,
+                                      page: page,
+                                      limit: limit,
+                                      sort: sort?.lemmy,
+                                      auth: auth,
+                                      saved_only: saved_only,
+                                      location: location?.lemmy).compactMap { $0.federated } ?? []
+        case .mastodon:
+            //TODO: pagination
+            return (try? await mastodon?.run(Timelines.public()).value.map { $0.asResource }) ?? []
+        default:
+            return []
+        }
     }
     static func posts(_ community: FederatedCommunity? = nil,
                       type: FederatedListingType = .local,
@@ -101,16 +112,48 @@ public extension Federation {
                       auth: String? = nil,
                       saved_only: Bool? = nil,
                       location: FederatedLocationType? = nil) async -> [FederatedPostResource] {
-        return await shared.posts(community,
-                                  id: community?.id,
-                                  name: community?.name,
-                                  type: type,
-                                  page: page,
-                                  limit: limit,
-                                  sort: sort,
-                                  auth: auth,
-                                  saved_only: saved_only,
-                                  location: location)
+        
+        let resolver: FetchResolver = await .fromCommunity(community,
+                                                     auth: auth,
+                                                     location: location, from: "static posts(:_)")
+        
+        if shared.isAutomatic {
+            var instancesToTry: [FederatedInstanceType] = FederatedInstanceType.validInstances
+            var posts: [FederatedPostResource] = []
+            while instancesToTry.isEmpty == false {
+                let instanceType = instancesToTry.removeFirst()
+                FederationLog("Fetching posts using | auto | attempting: \(instanceType.rawValue)")
+                posts = await shared.posts(community,
+                                           id: resolver.id,
+                                           name: resolver.name,
+                                           type: type,
+                                           page: page,
+                                           limit: limit,
+                                           sort: sort,
+                                           auth: resolver.auth,
+                                           saved_only: saved_only,
+                                           location: location,
+                                           instanceType: instanceType)
+                
+                if posts.isEmpty == false {
+                    //TODO: update map as well
+                    shared.currentServer?.setInstanceType(instanceType)
+                    break
+                }
+            }
+            return posts
+        } else {
+            return await shared.posts(community,
+                                      id: resolver.id,
+                                      name: resolver.name,
+                                      type: type,
+                                      page: page,
+                                      limit: limit,
+                                      sort: sort,
+                                      auth: resolver.auth,
+                                      saved_only: saved_only,
+                                      location: location)
+        }
     }
     
     /*
@@ -157,10 +200,13 @@ public extension Federation {
                          auth: String? = nil,
                          saved_only: Bool? = nil,
                          location: FederatedLocationType? = nil) async -> [FederatedCommentResource] {
+        
+        let resolver: FetchResolver = await .fromPost(post, community: community, auth: auth, location: location, from: "static comments(:_)")
+        
         return await shared.comments(post,
-                                     postId: post?.id,
+                                     postId: resolver.id,
                                      comment: comment,
-                                     community: community,
+                                     community: resolver.useCommunity ? community : nil,
                                      depth: depth,
                                      page: page,
                                      limit: limit,
@@ -196,11 +242,11 @@ public extension Federation {
                         saved_only: Bool? = nil,
                         auth: String? = nil,
                         location: FederatedLocationType = .base) async -> FederatedPersonDetails? {
-        return await shared.person(person?.id,
+        return await shared.person(person?.id.asInt,
                                     sort: sort,
                                     page: page,
                                     limit: limit,
-                                    community_id: community?.id,
+                                    community_id: community?.id.asInt,
                                     saved_only: saved_only,
                                     auth: auth,
                                     location: location)

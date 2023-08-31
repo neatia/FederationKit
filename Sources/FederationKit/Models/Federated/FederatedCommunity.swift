@@ -63,7 +63,7 @@ extension FederatedCommunity {
 }
 
 public struct FederatedCommunity: Codable, Identifiable, Hashable {
-    public let id: Int
+    public let id: String
     public let name: String
     public let title: String
     public let description: String?
@@ -80,12 +80,12 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
     public let inbox_url: String?
     public let hidden: Bool
     public let posting_restricted_to_mods: Bool
-    public let instance_id: Int
+    public let instance_id: String
     
     public var ap_id: String? = nil
 
     public init(
-        id: CommunityId,
+        id: String,
         name: String,
         title: String,
         description: String? = nil,
@@ -102,7 +102,7 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
         inbox_url: String?,
         hidden: Bool,
         posting_restricted_to_mods: Bool,
-        instance_id: InstanceId
+        instance_id: String
     ) {
         self.id = id
         self.name = name
@@ -126,7 +126,7 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
 }
 
 public struct FederatedCommunityAggregates: Codable, Identifiable, Hashable {
-    public let id: Int
+    public let id: String
     public let community_id: CommunityId
     public let subscribers: Int
     public let posts: Int
@@ -139,7 +139,7 @@ public struct FederatedCommunityAggregates: Codable, Identifiable, Hashable {
     public let hot_rank: Int
 
     public init(
-        id: Int,
+        id: String,
         community_id: CommunityId,
         subscribers: Int,
         posts: Int,
@@ -167,14 +167,14 @@ public struct FederatedCommunityAggregates: Codable, Identifiable, Hashable {
 
 extension FederatedCommunityAggregates {
     public static var mock: FederatedCommunityAggregates {
-        .init(id: 0, community_id: 0, subscribers: 0, posts: 0, comments: 0, published: "\(Date())", users_active_day: 0, users_active_week: 0, users_active_month: 0, users_active_half_year: 0, hot_rank: 0)
+        .init(id: "0", community_id: 0, subscribers: 0, posts: 0, comments: 0, published: "\(Date())", users_active_day: 0, users_active_week: 0, users_active_month: 0, users_active_half_year: 0, hot_rank: 0)
     }
 }
 
 public extension FederatedCommunity {
     static var mock: FederatedCommunity {
         .init(
-            id: 0,
+            id: "0",
             name: "mockcommunity",
             title: "Mock Community",
             description: "Lorem Ipsum",
@@ -191,7 +191,7 @@ public extension FederatedCommunity {
             inbox_url: nil,
             hidden: false,
             posting_restricted_to_mods: false,
-            instance_id: 0
+            instance_id: "0"
         )
     }
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 import LemmyKit
+import MastodonKit
 
 //Clients
 public protocol AnyFederatedServer {
@@ -36,6 +37,15 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         self.connect()
     }
     
+    //Automatic instancetype detection
+    public init(host: String) {
+        self.type = .automatic
+        let sanitized = FederationKit.sanitize(host)
+        let serverBaseUrl = sanitized.baseUrl ?? host
+        self.baseUrl = serverBaseUrl
+        self.host = sanitized.host ?? host
+    }
+    
     //auth can change (jwt token usually)
     public var id: String {
         baseUrl + "\(type)"
@@ -53,6 +63,10 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         switch type {
         case .lemmy:
             return lemmy != nil
+        case .mastodon:
+            return mastodon != nil
+        case .automatic:
+            return lemmy != nil || mastodon != nil
         default:
             return false
         }
@@ -62,9 +76,18 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         switch type {
         case .lemmy:
             lemmy = .init(apiUrl: baseUrl, base: false)
+        case .mastodon:
+            mastodon = .init(baseURL: baseUrl)
+        case .automatic:
+            lemmy = .init(apiUrl: baseUrl, base: false)
+            mastodon = .init(baseURL: baseUrl)
         default:
-            lemmy = nil
+            break
         }
+    }
+    
+    mutating public func setInstanceType(_ type: FederatedInstanceType) {
+        self.type = type
     }
     
     public func updateAuth(token: String) {
@@ -87,6 +110,7 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
     
     //Protocol values
     public var lemmy: Lemmy? = nil
+    public var mastodon: MastodonKit.Client? = nil
 }
 
 

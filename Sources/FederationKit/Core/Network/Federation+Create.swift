@@ -65,14 +65,14 @@ public extension Federation {
                                      auth: auth)?.federated
     }
     @discardableResult
-    static func editPost(_ postId: Int,
+    static func editPost(_ postId: String,
                          title: String,
                          url: String? = nil,
                          body: String? = nil,
                          nsfw: Bool = false,
                          language_id: Int? = nil,
                          auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.editPost(postId,
+        return await shared.editPost(postId.asInt,
                                      title: title,
                                      url: url,
                                      body: body,
@@ -115,12 +115,12 @@ public extension Federation {
                                         auth: auth)?.federated
     }
     @discardableResult
-    static func editComment(_ comment_id: Int,
+    static func editComment(_ comment_id: String,
                             content: String? = nil,
                             language_id: Int? = nil,
                             form_id: String? = nil,
                             auth: String? = nil) async -> FederatedComment? {
-        return await shared.editComment(comment_id,
+        return await shared.editComment(comment_id.asInt,
                                         content: content,
                                         language_id: language_id,
                                         form_id: form_id,

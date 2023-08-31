@@ -40,7 +40,7 @@ public extension Federation {
                            removed: Bool,
                            reason: String? = nil,
                            auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.removePost(post_id: post.id,
+        return await shared.removePost(post_id: post.id.asInt,
                                        removed: removed,
                                        reason: reason,
                                        auth: auth)
@@ -56,7 +56,7 @@ public extension Federation {
     static func deletePost(_ post: FederatedPost,
                            deleted: Bool,
                            auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.deletePost(post_id: post.id,
+        return await shared.deletePost(post_id: post.id.asInt,
                                        deleted: deleted,
                                        auth: auth)
     }
@@ -106,7 +106,7 @@ public extension Federation {
                               removed: Bool,
                               reason: String? = nil,
                               auth: String? = nil) async -> FederatedCommentResource? {
-        return await shared.removeComment(comment_id: comment.id,
+        return await shared.removeComment(comment_id: comment.id.asInt,
                                           removed: removed,
                                           reason: reason,
                                           auth: auth)
@@ -122,7 +122,7 @@ public extension Federation {
     static func deleteComment(_ comment: FederatedComment,
                               deleted: Bool,
                               auth: String? = nil) async -> FederatedCommentResource? {
-        return await shared.deleteComment(comment_id: comment.id,
+        return await shared.deleteComment(comment_id: comment.id.asInt,
                                           deleted: deleted,
                                           auth: auth)
     }

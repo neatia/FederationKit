@@ -16,11 +16,16 @@ public enum FederatedInstanceType: String, Codable {
     case lemmy
     case mastodon
     case unknown
+    case automatic
+    
+    public static var validInstances: [FederatedInstanceType] {
+        [.lemmy, .mastodon]
+    }
 }
 
 public struct FederatedInstance: Codable, Identifiable, Hashable {
     public var instanceType: FederatedInstanceType
-    public let id: Int
+    public let id: String
     public let domain: String
     public let published: String
     public let updated: String?
@@ -29,7 +34,7 @@ public struct FederatedInstance: Codable, Identifiable, Hashable {
 
     public init(
         _ instanceType: FederatedInstanceType,
-        id: Int,
+        id: String,
         domain: String,
         published: String,
         updated: String? = nil,
@@ -46,7 +51,7 @@ public struct FederatedInstance: Codable, Identifiable, Hashable {
     }
     
     public static var mock: FederatedInstance {
-        .init(.unknown, id: -1, domain: "https://loom.nyc", published: "\(Date())")
+        .init(.unknown, id: "-1", domain: "https://loom.nyc", published: "\(Date())")
     }
 }
 

@@ -19,7 +19,7 @@ public struct FederatedPersonResource: Codable, Hashable {
 }
 
 public struct FederatedPerson: Codable, Identifiable, Hashable {
-    public let id: Int
+    public let id: String
     public let name: String
     public let display_name: String?
     public let avatar: String?
@@ -36,10 +36,11 @@ public struct FederatedPerson: Codable, Identifiable, Hashable {
     public let admin: Bool
     public let bot_account: Bool
     public let ban_expires: String?
-    public let instance_id: Int
+    public let instance_id: String
+    public let instanceType: FederatedInstanceType
     
     public init(
-        id: Int,
+        id: String,
         name: String,
         display_name: String? = nil,
         avatar: String? = nil,
@@ -56,7 +57,8 @@ public struct FederatedPerson: Codable, Identifiable, Hashable {
         admin: Bool,
         bot_account: Bool,
         ban_expires: String? = nil,
-        instance_id: Int
+        instance_id: String,
+        instanceType: FederatedInstanceType
     ) {
         self.id = id
         self.name = name
@@ -76,13 +78,14 @@ public struct FederatedPerson: Codable, Identifiable, Hashable {
         self.bot_account = bot_account
         self.ban_expires = ban_expires
         self.instance_id = instance_id
+        self.instanceType = instanceType
     }
 }
 
 public extension FederatedPerson {
     static var mock: FederatedPerson {
         .init(
-            id: 0,
+            id: "0",
             name: "J. Doe",
             display_name: nil,
             avatar: nil,
@@ -99,8 +102,8 @@ public extension FederatedPerson {
             admin: false,
             bot_account: false,
             ban_expires: nil,
-            instance_id: 0
-        )
+            instance_id: "0",
+            instanceType: .unknown)
     }
 }
 
@@ -132,20 +135,24 @@ extension FederatedPerson {
 }
 
 public struct FederatedPersonAggregates: Codable, Identifiable, Hashable {
-    public let id: Int
-    public let person_id: PersonId
+    public let id: String
+    public let person_id: String
     public let post_count: Int
     public let post_score: Int
     public let comment_count: Int
     public let comment_score: Int
+    public let following_count: Int
+    public let followers_count: Int
 
     public init(
-        id: Int,
-        person_id: PersonId,
+        id: String,
+        person_id: String,
         post_count: Int,
         post_score: Int,
         comment_count: Int,
-        comment_score: Int
+        comment_score: Int,
+        following_count: Int = 0,
+        followers_count: Int = 0
     ) {
         self.id = id
         self.person_id = person_id
@@ -153,6 +160,8 @@ public struct FederatedPersonAggregates: Codable, Identifiable, Hashable {
         self.post_score = post_score
         self.comment_count = comment_count
         self.comment_score = comment_score
+        self.following_count = following_count
+        self.followers_count = followers_count
     }
 }
 
@@ -177,7 +186,7 @@ public struct FederatedPersonDetails: Codable, Hashable {
 
 public extension FederatedPersonAggregates {
     static var mock: FederatedPersonAggregates {
-        .init(id: 0, person_id: 0, post_count: 0, post_score: 0, comment_count: 0, comment_score: 0)
+        .init(id: "0", person_id: "0", post_count: 0, post_score: 0, comment_count: 0, comment_score: 0)
     }
 }
 
@@ -231,16 +240,16 @@ public struct FederatedPersonMentionResource: Codable, Hashable {
 }
 
 public struct FederatedPersonMention: Codable, Identifiable, Hashable {
-    public let id: Int
-    public let recipient_id: Int
-    public let comment_id: Int
+    public let id: String
+    public let recipient_id: String
+    public let comment_id: String
     public let read: Bool
     public let published: String
 
     public init(
-        id: Int,
-        recipient_id: Int,
-        comment_id: Int,
+        id: String,
+        recipient_id: String,
+        comment_id: String,
         read: Bool,
         published: String
     ) {
