@@ -10,7 +10,7 @@ import Foundation
 public class FederationMetadata: Equatable {
     public static func == (lhs: FederationMetadata,
                            rhs: FederationMetadata) -> Bool {
-        lhs.site.id == rhs.site.id
+        lhs.site.id == rhs.site.id && lhs.site.hashValue == rhs.site.hashValue
     }
     
     public var site: FederatedSite

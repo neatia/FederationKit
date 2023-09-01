@@ -90,31 +90,91 @@ extension LocalUser {
 
 extension SiteView {
     var federated: FederatedSiteResource {
-        .init(site: self.site.federated, local_site: self.local_site.federated, local_site_rate_limit: self.local_site_rate_limit.federated, counts: self.counts.federated)
+        .init(site: self.site.federated,
+              local_site: self.local_site.federated,
+              local_site_rate_limit: self.local_site_rate_limit.federated,
+              counts: self.counts.federated)
     }
 }
 
 extension Site {
     var federated: FederatedSite {
-        .init(id: self.id, name: self.name, published: self.published, actor_id: self.actor_id, last_refreshed_at: self.last_refreshed_at, inbox_url: self.inbox_url, public_key: self.public_key, instance_id: self.instance_id)
+        .init(id: self.id,
+              name: self.name,
+              sidebar: self.sidebar,
+              published: self.published,
+              updated: self.updated,
+              icon: self.icon,
+              banner: self.banner,
+              description: self.description,
+              actor_id: self.actor_id,
+              last_refreshed_at: self.last_refreshed_at,
+              inbox_url: self.inbox_url,
+              private_key: self.private_key,
+              public_key: self.public_key,
+              instance_id: self.instance_id)
     }
 }
 
 extension LocalSite {
     var federated: FederatedSiteDetails {
-        .init(id: self.id, site_id: self.site_id, site_setup: self.site_setup, enable_downvotes: self.enable_downvotes, enable_nsfw: self.enable_nsfw, community_creation_admin_only: self.community_creation_admin_only, require_email_verification: self.require_email_verification, private_instance: self.private_instance, default_theme: self.default_theme, default_post_listing_type: self.default_post_listing_type.federated, hide_modlog_mod_names: self.hide_modlog_mod_names, application_email_admins: self.application_email_admins, actor_name_max_length: self.actor_name_max_length, federation_enabled: self.federation_enabled, captcha_enabled: self.captcha_enabled, captcha_difficulty: self.captcha_difficulty, published: self.published, registration_mode: self.registration_mode.federated, reports_email_admins: self.reports_email_admins)
+        .init(id: self.id,
+              site_id: self.site_id,
+              site_setup: self.site_setup,
+              enable_downvotes: self.enable_downvotes,
+              enable_nsfw: self.enable_nsfw,
+              community_creation_admin_only: self.community_creation_admin_only,
+              require_email_verification: self.require_email_verification,
+              application_question: self.application_question,
+              private_instance: self.private_instance,
+              default_theme: self.default_theme,
+              default_post_listing_type: self.default_post_listing_type.federated,
+              hide_modlog_mod_names: self.hide_modlog_mod_names,
+              application_email_admins: self.application_email_admins,
+              slur_filter_regex: self.slur_filter_regex,
+              actor_name_max_length: self.actor_name_max_length,
+              federation_enabled: self.federation_enabled,
+              captcha_enabled: self.captcha_enabled,
+              captcha_difficulty: self.captcha_difficulty,
+              published: self.published,
+              updated: self.updated,
+              registration_mode: self.registration_mode.federated,
+              reports_email_admins: self.reports_email_admins)
     }
 }
 
 extension LocalSiteRateLimit {
     var federated: FederatedSiteRateLimit {
-        .init(id: self.id, local_site_id: self.local_site_id, message: self.message, message_per_second: self.message_per_second, post: self.post, post_per_second: self.post_per_second, register: self.register, register_per_second: self.register_per_second, image: self.image, image_per_second: self.image_per_second, comment: self.comment, comment_per_second: self.comment_per_second, search: self.search, search_per_second: self.search_per_second, published: self.published)
+        .init(id: self.id,
+              local_site_id: self.local_site_id,
+              message: self.message,
+              message_per_second: self.message_per_second,
+              post: self.post,
+              post_per_second: self.post_per_second,
+              register: self.register,
+              register_per_second: self.register_per_second,
+              image: self.image,
+              image_per_second: self.image_per_second,
+              comment: self.comment,
+              comment_per_second: self.comment_per_second,
+              search: self.search,
+              search_per_second: self.search_per_second,
+              published: self.published)
     }
 }
 
 extension SiteAggregates {
     var federated: FederatedSiteAggregates {
-        .init(id: self.id, site_id: self.site_id, users: self.users, posts: self.posts, comments: self.comments, communities: self.communities, users_active_day: self.users_active_day, users_active_week: self.users_active_week, users_active_month: self.users_active_month, users_active_half_year: self.users_active_half_year)
+        .init(id: self.id,
+              site_id: self.site_id,
+              users: self.users,
+              posts: self.posts,
+              comments: self.comments,
+              communities: self.communities,
+              users_active_day: self.users_active_day,
+              users_active_week: self.users_active_week,
+              users_active_month: self.users_active_month,
+              users_active_half_year: self.users_active_half_year)
     }
 }
 

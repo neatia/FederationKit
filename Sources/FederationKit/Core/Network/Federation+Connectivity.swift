@@ -9,9 +9,10 @@ import Foundation
 
 //MARK: Ping
 public extension Federation {
-    func ping(_ host: String? = nil) async -> (isUp: Bool, time: TimeInterval)? {
-        //LemmyLog(host ?? baseURL, logLevel: .debug)
-        if let url = URL(string: FederationKit.host) {
+    func ping(_ baseUrl: String? = nil) async -> (isUp: Bool, time: TimeInterval)? {
+        guard let urlString = baseUrl ?? currentServer?.baseUrl else { return nil }
+        if let url = URL(string: urlString) {
+            FederationLog("Ping Test: \(url.absoluteString)", level: .debug)
             var request = URLRequest(url: url)
             request.httpMethod = "HEAD"
             

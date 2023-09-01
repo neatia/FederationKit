@@ -17,7 +17,7 @@ extension String {
     }
     
     var asInt: Int {
-        Int(self) ?? -1
+        Int(self) ?? self.hashValue
     }
     
     var plainText: String {
