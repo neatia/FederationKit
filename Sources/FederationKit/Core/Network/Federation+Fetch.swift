@@ -94,7 +94,7 @@ public extension Federation {
                                       page: page,
                                       limit: limit,
                                       sort: sort?.lemmy,
-                                      auth: auth,
+                                      auth: auth ?? lemmy?.auth,
                                       saved_only: saved_only,
                                       location: location?.lemmy).compactMap { $0.federated } ?? []
         case .mastodon:
@@ -185,7 +185,11 @@ public extension Federation {
                                      limit: limit,
                                      type: type.lemmy,
                                      sort: sort.lemmy,
-                                     auth: auth,
+                                     //For posts and comments we need to see if this auth should
+                                     //be handled on LemmyKit or here
+                                     //Since heach lemmy is instanced in federationkit, we are doing it this way
+                                     //when in the LemmyKit only version we were calling these statically
+                                     auth: auth ?? lemmy?.auth,
                                      saved_only: saved_only,
                                      location: location?.lemmy).compactMap { $0.federated } ?? []
     }

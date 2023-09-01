@@ -20,7 +20,7 @@ public extension Federation {
         //to create the resource at this location
         
         if let resource = lemmy?.user?.federated {
-            addUser(resource)
+            addUser(resource, auth: jwt)
         }
         
         return jwt

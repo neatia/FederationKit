@@ -26,14 +26,26 @@ public class Federation {
     private var auths: [String:String] = [:]
     
     internal var currentServer: FederationServer? = nil
+    //TODO: Should this be UserResource or FederationUser?
+    internal var currentUser: UserResource? = nil
     
     public init(_ server: FederationServer) {
+        set(server)
+    }
+    
+    @discardableResult
+    public func add(_ server: FederationServer) -> FederationServer {
         var mutableServer = server
         if mutableServer.isOnline == false {
             mutableServer.connect()
         }
         servers[server.host] = mutableServer
-        self.currentServer = mutableServer
+        
+        return mutableServer
+    }
+    
+    public func set(_ server: FederationServer) {
+        self.currentServer = add(server)
     }
     
     public convenience init(_ type: FederatedInstanceType, baseUrl: String) {
@@ -78,22 +90,30 @@ public class Federation {
     /*
      If a client setups up account profiles
      */
-    public func addUser(_ resource: UserResource) {
+    public func addUser(_ resource: UserResource, auth token: String? = nil) {
         let host = resource.user.person.actor_id.host
         FederationLog("Adding user: \(resource.user.person.username) for host: \(host)")
         servers[host] = .init(resource.instanceType, host: host)
         servers[host]?.connect()
         self.users[host] = .init(resource: resource, host: host)
+        
+        if let token {
+            servers[host]?.updateAuth(auth: token, user: resource)
+        }
     }
     
     func isMe(_ person: FederatedPerson, includeAll: Bool = false) -> Bool {
-        let host = includeAll ? person.actor_id.host : (currentServer?.host ?? "")        
-        return self.users[host]?.resource.user.person.equals(person) == true
+        if includeAll {
+            return self.users[person.actor_id.host]?.resource.user.person.equals(person) == true
+        } else {
+            return self.currentUser?.user.person.equals(person) == true
+        }
     }
     
     public func user(for server: FederationServer? = nil) -> FederationUser? {
-        guard let server = server ?? currentServer else { return nil }
-        return self.users[server.host]
+        guard let server = server ?? currentServer,
+              let user = server.currentUser else { return nil }
+        return .init(resource: user, host: server.host)
     }
     
     public func metadata(for server: FederationServer? = nil) -> FederationMetadata? {
@@ -101,8 +121,13 @@ public class Federation {
         return self.metadatas[server.host]
     }
     
-    public func setAuth(for server: FederationServer, token: String) {
+    public func setAuth(for server: FederationServer, auth token: String, user resource: UserResource) {
         self.auths[server.host] = token
+        self.servers[server.host]?.updateAuth(auth: token, user: resource)
+        self.currentUser = resource
+        if server.host == currentServer?.host {
+            currentServer?.updateAuth(auth: token, user: resource)
+        }
     }
     
     public func auth(for server: FederationServer) -> String? {
@@ -115,6 +140,11 @@ public class Federation {
     
     public func logout(for server: FederationServer) {
         self.auths[server.host] = nil
+        self.servers[server.host]?.removeAuth()
+        self.currentUser = nil
+        if server.host == currentServer?.host {
+            currentServer?.removeAuth()
+        }
     }
     
     public var currentInstanceType: FederatedInstanceType {

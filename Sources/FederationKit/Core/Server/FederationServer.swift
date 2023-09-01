@@ -14,8 +14,8 @@ public protocol AnyFederatedServer {
     var lemmy: Lemmy? { get set }
     var isOnline: Bool { get }
     mutating func connect()
-    func updateAuth(token: String)
-    func removeAuth()
+    mutating func updateAuth(auth token: String, user resource: UserResource)
+    mutating func removeAuth()
 }
 
 public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyFederatedServer {
@@ -26,7 +26,7 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
     public var type: FederatedInstanceType
     public var baseUrl: String
     public var host: String
-    
+    public var currentUser: UserResource? = nil
     public init(_ type: FederatedInstanceType, host: String) {
         self.type = type
         let sanitized = FederationKit.sanitize(host)
@@ -90,19 +90,21 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         self.type = type
     }
     
-    public func updateAuth(token: String) {
+    mutating public func updateAuth(auth token: String, user resource: UserResource) {
         switch type {
         case .lemmy:
             lemmy?.auth = token
+            currentUser = resource
         default:
             break
         }
     }
     
-    public func removeAuth() {
+    mutating public func removeAuth() {
         switch type {
         case .lemmy:
             lemmy?.auth = nil
+            currentUser = nil
         default:
             break
         }

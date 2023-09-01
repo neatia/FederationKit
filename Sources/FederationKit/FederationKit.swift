@@ -12,7 +12,7 @@ public class FederationKit {
     public static var current: Federation = .init()
     
     public static func initialize(_ server: FederationServer) {
-        current = .init(server)
+        current.set(server)
     }
     
     public static var host: String {
@@ -47,10 +47,9 @@ public extension FederationKit {
         return current.auth(for: server)
     }
     
-    static func setAuth(for server: FederationServer? = nil, token: String) {
+    static func setAuth(for server: FederationServer? = nil, token: String, user resource: UserResource) {
         guard let server = server ?? current.currentServer else  { return }
-        server.updateAuth(token: token)
-        current.setAuth(for: server, token: token)
+        current.setAuth(for: server, auth: token, user: resource)
     }
     
     static func user(for server: FederationServer? = nil) -> FederationUser? {
@@ -60,7 +59,6 @@ public extension FederationKit {
 
     static func logout(for server: FederationServer? = nil) {
         guard let server = server ?? current.currentServer else  { return }
-        server.removeAuth()
         current.logout(for: server)
     }
     
