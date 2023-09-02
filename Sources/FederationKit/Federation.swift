@@ -27,7 +27,9 @@ public class Federation {
     
     internal var currentServer: FederationServer? = nil
     //TODO: Should this be UserResource or FederationUser?
-    internal var currentUser: UserResource? = nil
+    internal var currentUser: UserResource? {
+        currentServer?.currentUser
+    }
     
     public init(_ server: FederationServer) {
         set(server)
@@ -124,7 +126,6 @@ public class Federation {
     public func setAuth(for server: FederationServer, auth token: String, user resource: UserResource) {
         self.auths[server.host] = token
         self.servers[server.host]?.updateAuth(auth: token, user: resource)
-        self.currentUser = resource
         if server.host == currentServer?.host {
             currentServer?.updateAuth(auth: token, user: resource)
         }
@@ -135,13 +136,12 @@ public class Federation {
     }
     
     public func isAuthenticated(for server: FederationServer) -> Bool {
-        self.auths[server.host] != nil
+        server.currentUser != nil || auth(for: server) != nil
     }
     
     public func logout(for server: FederationServer) {
         self.auths[server.host] = nil
         self.servers[server.host]?.removeAuth()
-        self.currentUser = nil
         if server.host == currentServer?.host {
             currentServer?.removeAuth()
         }

@@ -31,7 +31,7 @@ public extension Federation {
                                        url: url,
                                        body: body,
                                        community: community.lemmy,
-                                       auth: auth)?.federated
+                                       auth: auth ?? lemmy?.auth)?.federated
     }
     @discardableResult
     static func createPost(_ title: String,
@@ -62,7 +62,7 @@ public extension Federation {
                                      body: body,
                                      nsfw: nsfw,
                                      language_id: language_id,
-                                     auth: auth)?.federated
+                                     auth: auth ?? lemmy?.auth)?.federated
     }
     @discardableResult
     static func editPost(_ postId: String,
@@ -89,7 +89,7 @@ public extension Federation {
         return await lemmy?.createComment(content,
                                           post: post.lemmy,
                                           parent: parent?.lemmy,
-                                          auth: auth)?.federated
+                                          auth: auth ?? lemmy?.auth)?.federated
     }
     @discardableResult
     static func createComment(_ content: String,
@@ -112,7 +112,7 @@ public extension Federation {
                                         content: content,
                                         language_id: language_id,
                                         form_id: form_id,
-                                        auth: auth)?.federated
+                                        auth: auth ?? lemmy?.auth)?.federated
     }
     @discardableResult
     static func editComment(_ comment_id: String,

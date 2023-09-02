@@ -102,7 +102,6 @@ struct FetchResolver {
                              id: post?.id.asInt)
         case .peer(let host):
             let sourceId: Int?
-            let host = host.host ?? host
             if host == post?.ap_id.host {
                 sourceId = Int(post?.ap_id.components(separatedBy: "/").last ?? "")
             } else {

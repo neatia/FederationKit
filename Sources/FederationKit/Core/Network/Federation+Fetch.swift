@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-
+import LemmyKit
 import MastodonKit
 
 //MARK: -- Fetch
@@ -207,18 +207,35 @@ public extension Federation {
         
         let resolver: FetchResolver = await .fromPost(post, community: community, auth: auth, location: location, from: "static comments(:_)")
         
-        return await shared.comments(post,
-                                     postId: resolver.id,
-                                     comment: comment,
-                                     community: resolver.useCommunity ? community : nil,
-                                     depth: depth,
-                                     page: page,
-                                     limit: limit,
-                                     type: type,
-                                     sort: sort,
-                                     auth: auth,
-                                     saved_only: saved_only,
-                                     location: location)
+        if resolver.useBase == false,
+           let domain = resolver.domain {
+            let instancedLemmy: Lemmy = .init(apiUrl: domain)
+            return await instancedLemmy.comments(post?.lemmy,
+                                                 postId: resolver.sourceId,
+                                                 comment: comment?.lemmy,
+                                                 community: resolver.useCommunity ? community?.lemmy : nil,
+                                                 depth: depth,
+                                                 page: page,
+                                                 limit: limit,
+                                                 type: type.lemmy,
+                                                 sort: sort.lemmy,
+                                                 auth: auth,
+                                                 location: location?.lemmy).compactMap { $0.federated }
+            
+        } else {
+            return await shared.comments(post,
+                                         postId: resolver.id,
+                                         comment: comment,
+                                         community: resolver.useCommunity ? community : nil,
+                                         depth: depth,
+                                         page: page,
+                                         limit: limit,
+                                         type: type,
+                                         sort: sort,
+                                         auth: auth,
+                                         saved_only: saved_only,
+                                         location: location)
+        }
     }
     
     func person(_ person_id: Int? = nil,

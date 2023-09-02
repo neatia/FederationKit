@@ -19,8 +19,10 @@ public extension Federation {
         //For other servers, we would need to edit their kit to provide some sort of data
         //to create the resource at this location
         
-        if let resource = lemmy?.user?.federated {
+        if let jwt,
+           let resource = lemmy?.user?.federated {
             addUser(resource, auth: jwt)
+            currentServer?.updateAuth(auth: jwt, user: resource)
         }
         
         return jwt
