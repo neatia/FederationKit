@@ -23,13 +23,12 @@ public class Federation {
     //For now clients should handle multiple users per domain,
     //while this kit handles a single authentication per domain (not per instanceType)
     private var users: [String:FederationUser] = [:]
-    private var auths: [String:String] = [:]
+    internal var auths: [String:String] = [:]
     
     internal var currentServer: FederationServer? = nil
+    
     //TODO: Should this be UserResource or FederationUser?
-    internal var currentUser: UserResource? {
-        currentServer?.currentUser
-    }
+    internal var currentUser: FederationUser? = nil
     
     public init(_ server: FederationServer) {
         set(server)
@@ -79,7 +78,7 @@ public class Federation {
     internal func update(site: FederatedSiteResult?, for server: FederationServer) {
         if let site {
             if let resource = site.my_user {
-                self.users[server.host] = .init(resource: resource, host: server.host)
+                self.users[server.host] = .init(resource, host: server.host)
             }
             
             self.metadatas[server.host] = .init(siteView: site.site_view)
@@ -89,46 +88,58 @@ public class Federation {
         siteLoaded = true
     }
     
-    /*
-     If a client setups up account profiles
-     */
+    //MARK: Users
     public func addUser(_ resource: UserResource, auth token: String? = nil) {
         let host = resource.user.person.actor_id.host
         FederationLog("Adding user: \(resource.user.person.username) for host: \(host)")
         servers[host] = .init(resource.instanceType, host: host)
         servers[host]?.connect()
-        self.users[host] = .init(resource: resource, host: host)
+        self.users[host] = .init(resource)
         
         if let token {
             servers[host]?.updateAuth(auth: token, user: resource)
         }
     }
     
+    public func setUser(_ resource: UserResource, auth token: String? = nil) {
+        self.addUser(resource, auth: token)
+        
+        if let token,
+           currentServer?.host == resource.host {
+            currentServer?.updateAuth(auth: token, user: resource)
+        }
+        
+        self.currentUser = .init(resource)
+    }
+    
     func isMe(_ person: FederatedPerson, includeAll: Bool = false) -> Bool {
         if includeAll {
             return self.users[person.actor_id.host]?.resource.user.person.equals(person) == true
         } else {
-            return self.currentUser?.user.person.equals(person) == true
+            return self.currentUser?.resource.user.person.equals(person) == true
         }
     }
     
     public func user(for server: FederationServer? = nil) -> FederationUser? {
         guard let server = server ?? currentServer,
               let user = server.currentUser else { return nil }
-        return .init(resource: user, host: server.host)
+        return .init(user, host: server.host)
     }
     
+    //MARK: metadata
     public func metadata(for server: FederationServer? = nil) -> FederationMetadata? {
         guard let server = server ?? currentServer else { return nil }
         return self.metadatas[server.host]
     }
     
-    public func setAuth(for server: FederationServer, auth token: String, user resource: UserResource) {
-        self.auths[server.host] = token
-        self.servers[server.host]?.updateAuth(auth: token, user: resource)
-        if server.host == currentServer?.host {
+    public func setAuth(_ token: String, user resource: UserResource) {
+        let host = resource.host
+        self.auths[host] = token
+        self.servers[host]?.updateAuth(auth: token, user: resource)
+        if host == currentServer?.host {
             currentServer?.updateAuth(auth: token, user: resource)
         }
+        currentUser = .init(resource)
     }
     
     public func auth(for server: FederationServer) -> String? {
@@ -144,6 +155,10 @@ public class Federation {
         self.servers[server.host]?.removeAuth()
         if server.host == currentServer?.host {
             currentServer?.removeAuth()
+        }
+        
+        if server.host == currentUser?.host {
+            self.currentUser = nil
         }
     }
     

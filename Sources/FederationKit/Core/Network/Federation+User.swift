@@ -6,9 +6,27 @@
 //
 
 import Foundation
-
+import LemmyKit
 
 public extension Federation {
+    func getUserData(for resource: UserResource? = nil, auth token: String? = nil) async -> UserResource? {
+        guard let user = resource ?? currentUser?.resource else { return nil }
+        
+        let host = user.host
+        FederationLog("Getting user data for host: \(host)", level: .debug)
+        let lemmy: Lemmy = .init(apiUrl: host)
+        
+        let auth: String? = token ?? self.auths[host]
+        FederationLog("found auth: \(auth != nil)", level: .debug)
+        let result = await lemmy.site(auth: auth)?.federated
+        FederationLog("user retrieved: \(result?.my_user != nil)", level: .debug)
+        
+        return result?.my_user
+    }
+    static func getUserData(for resource: UserResource? = nil) async -> UserResource? {
+        return await shared.getUserData(for: resource)
+    }
+    
     func mentions(sort: FederatedCommentSortType? = nil,
                   page: Int? = nil,
                   limit: Int? = nil,
@@ -21,6 +39,7 @@ public extension Federation {
                                      unreadOnly: unreadOnly,
                                      auth: auth)?.federated
     }
+    
     static func mentions(sort: FederatedCommentSortType? = nil,
                          page: Int? = nil,
                          limit: Int? = nil,

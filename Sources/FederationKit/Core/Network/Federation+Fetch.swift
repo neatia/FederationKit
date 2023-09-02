@@ -279,13 +279,31 @@ public extension Federation {
                         saved_only: Bool? = nil,
                         auth: String? = nil,
                         location: FederatedLocationType = .base) async -> FederatedPersonDetails? {
-        return await shared.person(person?.id.asInt,
-                                    sort: sort,
-                                    page: page,
-                                    limit: limit,
-                                    community_id: community?.id.asInt,
-                                    saved_only: saved_only,
-                                    auth: auth,
-                                    location: location)
+        
+        let resolver: FetchResolver = await .fromPerson(person, auth: auth, location: location, from: "static person(:_)")
+        
+        if resolver.useBase == false,
+           let domain = resolver.domain {
+            let instancedLemmy: Lemmy = .init(apiUrl: domain)
+            
+            return await instancedLemmy.person(resolver.id,
+                                               sort: sort?.lemmy,
+                                               page: page,
+                                               limit: limit,
+                                               //?
+                                               community_id: community?.id.asInt,
+                                               saved_only: saved_only,
+                                               auth: auth,
+                                               location: location.lemmy)?.federated
+        } else {
+            return await shared.person(resolver.id,
+                                       sort: sort,
+                                       page: page,
+                                       limit: limit,
+                                       community_id: community?.id.asInt,
+                                       saved_only: saved_only,
+                                       auth: auth,
+                                       location: location)
+        }
     }
 }

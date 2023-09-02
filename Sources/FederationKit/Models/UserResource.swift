@@ -15,6 +15,10 @@ public struct UserResource: Codable, Hashable {
     public let person_blocks: [PersonRelationshipModel]
     public let discussion_languages: [Int]
     public let instanceType: FederatedInstanceType
+    
+    public var host: String {
+        user.person.actor_id.host
+    }
 
     public init(
         user: UserInfo,

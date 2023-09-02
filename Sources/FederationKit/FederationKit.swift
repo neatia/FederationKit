@@ -47,9 +47,8 @@ public extension FederationKit {
         return current.auth(for: server)
     }
     
-    static func setAuth(for server: FederationServer? = nil, token: String, user resource: UserResource) {
-        guard let server = server ?? current.currentServer else  { return }
-        current.setAuth(for: server, auth: token, user: resource)
+    static func setAuth(_ token: String, user resource: UserResource) {
+        current.setAuth(token, user: resource)
     }
     
     static func user(for server: FederationServer? = nil) -> FederationUser? {

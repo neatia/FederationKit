@@ -30,9 +30,25 @@ struct FetchResolver {
                            from context: String = "") async -> FetchResolver {
         let resolver: FetchResolver
         
-        resolver = .init(useBase: true,
-                         actor: person?.actor_id,
-                         id: person?.id.asInt)
+        switch location {
+        case .source:
+            let isBase: Bool = person?.actor_id.host == FederationKit.host
+            resolver = .init(useBase: isBase,
+                             actor: person?.actor_id,
+                             id: person?.id.asInt)
+        case .peer(let host):
+            let sourceId: Int? = Int(person?.actor_id.components(separatedBy: "/").last ?? "")
+            let isBase: Bool = person?.actor_id.host == FederationKit.host
+            
+            resolver = .init(useBase: isBase,
+                             actor: host,
+                             id: isBase ? person?.id.asInt : (sourceId ?? person?.id.asInt))
+        default:
+            resolver = .init(useBase: true,
+                             actor: person?.actor_id,
+                             id: person?.id.asInt)
+        }
+        
         
         //print(resolver.description(context, from: "person", location: location ?? .base))
         return resolver

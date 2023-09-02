@@ -6,23 +6,42 @@
 //
 
 import Foundation
+import LemmyKit
 
 public extension Federation {
     func login(username: String,
                password: String,
-               token2FA: String? = nil) async -> String? {
-        let jwt = await lemmy?.login(username: username,
+               token2FA: String? = nil,
+               location: FederatedLocationType = .base) async -> String? {
+        let jwt: String?
+        let resource: UserResource?
+        
+        
+        switch location {
+        case .peer(let host):
+            let instancedLemmy: Lemmy = .init(apiUrl: host)
+            jwt = await instancedLemmy.login(username: username,
+                                             password: password,
+                                             token2FA: token2FA)
+            
+            resource = instancedLemmy.user?.federated
+        default:
+            jwt = await lemmy?.login(username: username,
                                      password: password,
                                      token2FA: token2FA)
+            
+            resource = lemmy?.user?.federated
+        }
+        
         
         FederationLog("Login succeeded: \(jwt != nil)")
+        
         //For other servers, we would need to edit their kit to provide some sort of data
         //to create the resource at this location
         
         if let jwt,
-           let resource = lemmy?.user?.federated {
-            addUser(resource, auth: jwt)
-            currentServer?.updateAuth(auth: jwt, user: resource)
+           let resource {
+            setUser(resource, auth: jwt)
         }
         
         return jwt
