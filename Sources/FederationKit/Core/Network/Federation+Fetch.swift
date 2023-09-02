@@ -114,8 +114,9 @@ public extension Federation {
                       location: FederatedLocationType? = nil) async -> [FederatedPostResource] {
         
         let resolver: FetchResolver = await .fromCommunity(community,
-                                                     auth: auth,
-                                                     location: location, from: "static posts(:_)")
+                                                           auth: auth,
+                                                           location: location,
+                                                           from: "static posts(:_)")
         
         if shared.isAutomatic {
             var instancesToTry: [FederatedInstanceType] = FederatedInstanceType.validInstances
@@ -142,6 +143,21 @@ public extension Federation {
                 }
             }
             return posts
+        } else if resolver.useBase == false,
+                  let domain = resolver.domain {
+            
+            let instancedLemmy: Lemmy = .init(apiUrl: domain)
+            
+            return await instancedLemmy.posts(community?.lemmy,
+                                              id: resolver.id,
+                                              name: resolver.name,
+                                              type: type.lemmy,
+                                              page: page,
+                                              limit: limit,
+                                              sort: sort?.lemmy,
+                                              auth: nil,
+                                              location: location?.lemmy).compactMap { $0.federated }
+            
         } else {
             return await shared.posts(community,
                                       id: resolver.id,
