@@ -82,6 +82,7 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
     public let posting_restricted_to_mods: Bool
     public let instance_id: String
     
+    //TODO: revisit necessity of this, will have to be removed from LemmyKit as well
     public var ap_id: String? = nil
 
     public init(

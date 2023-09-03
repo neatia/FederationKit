@@ -41,12 +41,20 @@ public extension Federation {
     func community(_ id: Int? = nil,
                    name: String? = nil,
                    auth: String? = nil,
-                   location: FederatedLocationType? = nil) async -> FederatedCommunityResource? {
-        
-        return await lemmy?.community(id,
-                                      name: name,
-                                      auth: auth,
-                                      location: location?.lemmy)?.federated
+                   location: FederatedLocationType? = nil,
+                   serverHost: String? = nil) async -> FederatedCommunityResource? {
+        if let serverHost,
+           let server = servers[serverHost] {
+            return await server.lemmy?.community(id,
+                                          name: name,
+                                          auth: auth,
+                                          location: location?.lemmy)?.federated
+        } else {
+            return await lemmy?.community(id,
+                                          name: name,
+                                          auth: auth,
+                                          location: location?.lemmy)?.federated
+        }
     }
     
     static func community(_ id: String? = nil,
@@ -57,7 +65,8 @@ public extension Federation {
         return await shared.community(id?.asInt ?? community?.id.asInt,
                                       name: name ?? community?.name,
                                       auth: auth,
-                                      location: location)
+                                      location: location,
+                                      serverHost: community?.actor_id.host)
     }
     
     func post(_ postId: Int? = nil,
@@ -96,7 +105,7 @@ public extension Federation {
         return await shared.post(post?.id.asInt,
                                  comment: comment,
                                  auth: auth,
-                                 serverHost: post?.ap_id.host )
+                                 serverHost: post?.ap_id.host)
     }
     
     func posts(_ community: FederatedCommunity? = nil,
@@ -109,20 +118,39 @@ public extension Federation {
                auth: String? = nil,
                saved_only: Bool? = nil,
                location: FederatedLocationType? = nil,
-               instanceType: FederatedInstanceType? = nil) async -> [FederatedPostResource] {
+               instanceType: FederatedInstanceType? = nil,
+               serverHost: String? = nil) async -> [FederatedPostResource] {
         
         switch (instanceType ?? currentServer?.type) {
         case .lemmy:
-            return await lemmy?.posts(community?.lemmy,
-                                      id: id,
-                                      name: name,
-                                      type: type.lemmy,
-                                      page: page,
-                                      limit: limit,
-                                      sort: sort?.lemmy,
-                                      auth: auth ?? lemmy?.auth,
-                                      saved_only: saved_only,
-                                      location: location?.lemmy).compactMap { $0.federated } ?? []
+            if let serverHost,
+               let server = servers[serverHost] {
+                
+                return await server.lemmy?.posts(community?.lemmy,
+                                          id: id,
+                                          name: name,
+                                          type: type.lemmy,
+                                          page: page,
+                                          limit: limit,
+                                          sort: sort?.lemmy,
+                                          auth: auth ?? lemmy?.auth,
+                                          saved_only: saved_only,
+                                          location: location?.lemmy).compactMap { $0.federated } ?? []
+                
+                
+            } else {
+                
+                return await lemmy?.posts(community?.lemmy,
+                                          id: id,
+                                          name: name,
+                                          type: type.lemmy,
+                                          page: page,
+                                          limit: limit,
+                                          sort: sort?.lemmy,
+                                          auth: auth ?? lemmy?.auth,
+                                          saved_only: saved_only,
+                                          location: location?.lemmy).compactMap { $0.federated } ?? []
+            }
         case .mastodon:
             //TODO: pagination
             return (try? await mastodon?.run(Timelines.public()).value.map { $0.asResource }) ?? []
@@ -139,6 +167,14 @@ public extension Federation {
                       saved_only: Bool? = nil,
                       location: FederatedLocationType? = nil) async -> [FederatedPostResource] {
         
+        //The serverHost: String logic seems to be the whole strategy
+        //around resolvement, over what is currently used below `FetchResolver`
+        //Which may have been an over engineere'd step. Need to revise the pros/cons
+        //of both.
+        //
+        //The reason why the serverHost strategy was discovered now was the use of the
+        //serverMap : [String: FederationServer] which was not there in the statically
+        //composed LemmyKit in the earlier iteration of the app
         let resolver: FetchResolver = await .fromCommunity(community,
                                                            auth: auth,
                                                            location: location,
@@ -160,7 +196,8 @@ public extension Federation {
                                            auth: resolver.auth,
                                            saved_only: saved_only,
                                            location: location,
-                                           instanceType: instanceType)
+                                           instanceType: instanceType,
+                                           serverHost: community?.actor_id.host)
                 
                 if posts.isEmpty == false {
                     //TODO: update map as well
@@ -194,7 +231,8 @@ public extension Federation {
                                       sort: sort,
                                       auth: resolver.auth,
                                       saved_only: saved_only,
-                                      location: location)
+                                      location: location,
+                                      serverHost: community?.actor_id.host)
         }
     }
     
