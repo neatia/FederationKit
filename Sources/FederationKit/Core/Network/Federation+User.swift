@@ -189,16 +189,9 @@ public extension Federation {
     func deletePost(post_id: Int,
                     deleted: Bool,
                     auth: String? = nil) async -> FederatedPostResource? {
-        if let currentUser {
-            return await servers[currentUser.host]?.lemmy?.deletePost(post_id: post_id,
-                                                                      deleted: deleted,
-                                                                      auth: auth)?.post_view.federated
-            
-        } else {
-            return await lemmy?.deletePost(post_id: post_id,
-                                           deleted: deleted,
-                                           auth: auth)?.post_view.federated
-        }
+        return await usersLemmy?.deletePost(post_id: post_id,
+                                       deleted: deleted,
+                                       auth: auth)?.post_view.federated
     }
     static func deletePost(_ post: FederatedPost,
                            deleted: Bool,
@@ -218,23 +211,13 @@ public extension Federation {
                     language_id: Int? = nil,
                     auth: String? = nil) async -> FederatedPostResource? {
         
-        if let currentUser {
-            return await servers[currentUser.host]?.lemmy?.editPost(postId,
-                                                                    title: title,
-                                                                    url: url,
-                                                                    body: body,
-                                                                    nsfw: nsfw,
-                                                                    language_id: language_id,
-                                                                    auth: auth)?.federated
-        } else {
-            return await lemmy?.editPost(postId,
-                                         title: title,
-                                         url: url,
-                                         body: body,
-                                         nsfw: nsfw,
-                                         language_id: language_id,
-                                         auth: auth ?? lemmy?.auth)?.federated
-        }
+        return await usersLemmy?.editPost(postId,
+                                     title: title,
+                                     url: url,
+                                     body: body,
+                                     nsfw: nsfw,
+                                     language_id: language_id,
+                                     auth: auth ?? usersLemmy?.auth)?.federated
     }
     @discardableResult
     static func editPost(_ postId: String,
@@ -260,15 +243,9 @@ public extension Federation {
                        deleted: Bool,
                        auth: String? = nil) async -> FederatedCommentResource? {
         
-        if let currentUser {
-            return await servers[currentUser.host]?.lemmy?.deleteComment(comment_id: comment_id,
-                                                                         deleted: deleted,
-                                                                         auth: auth)?.comment_view.federated
-        } else {
-            return await lemmy?.deleteComment(comment_id: comment_id,
-                                              deleted: deleted,
-                                              auth: auth)?.comment_view.federated
-        }
+        return await usersLemmy?.deleteComment(comment_id: comment_id,
+                                          deleted: deleted,
+                                          auth: auth)?.comment_view.federated
     }
     static func deleteComment(_ comment: FederatedComment,
                               deleted: Bool,
@@ -285,19 +262,11 @@ public extension Federation {
                      form_id: String? = nil,
                      auth: String? = nil) async -> FederatedComment? {
         
-        if let currentUser {
-            return await servers[currentUser.host]?.lemmy?.editComment(comment_id,
-                                                                       content: content,
-                                                                       language_id: language_id,
-                                                                       form_id: form_id,
-                                                                       auth: auth)?.federated
-        } else {
-            return await lemmy?.editComment(comment_id,
-                                            content: content,
-                                            language_id: language_id,
-                                            form_id: form_id,
-                                            auth: auth ?? lemmy?.auth)?.federated
-        }
+        return await usersLemmy?.editComment(comment_id,
+                                        content: content,
+                                        language_id: language_id,
+                                        form_id: form_id,
+                                        auth: auth ?? usersLemmy?.auth)?.federated
     }
     @discardableResult
     static func editComment(_ comment_id: String,

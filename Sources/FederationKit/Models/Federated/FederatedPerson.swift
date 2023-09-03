@@ -116,6 +116,10 @@ extension FederatedPerson {
         FederationKit.isMe(self)
     }
     
+    public var isHome: Bool {
+        FederationKit.isHome(self)
+    }
+    
     public var username: String {
         self.name + "@" + self.actor_id.host
     }

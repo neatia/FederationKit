@@ -62,15 +62,41 @@ public extension Federation {
     
     func post(_ postId: Int? = nil,
               comment: FederatedComment? = nil,
-              auth: String? = nil) async -> FederatedPostResource? {
-        return await lemmy?.post(postId,
-                                 comment: comment?.lemmy,
-                                 auth: auth)?.federated
+              auth: String? = nil,
+              serverHost: String? = nil) async -> FederatedPostResource? {
+        
+        /*
+         So this is a different design pattern
+         then the other flows in this kit when deciding
+         which server. There should be a level of consistency when
+         it is clear. Or a set of best practices. Maybe for one-shots
+         like this call, it is good to retrieve with a host key-value
+         */
+        if let serverHost,
+           let server = servers[serverHost] {
+            return await server.lemmy?.post(postId,
+                                            comment: comment?.lemmy,
+                                            auth: auth)?.federated
+        } else {
+            return await lemmy?.post(postId,
+                                     comment: comment?.lemmy,
+                                     auth: auth)?.federated
+        }
     }
     static func post(_ postId: String? = nil,
                      comment: FederatedComment? = nil,
                      auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.post(postId?.asInt, comment: comment, auth: auth)
+        return await shared.post(postId?.asInt,
+                                 comment: comment,
+                                 auth: auth)
+    }
+    static func post(_ post: FederatedPost? = nil,
+                     comment: FederatedComment? = nil,
+                     auth: String? = nil) async -> FederatedPostResource? {
+        return await shared.post(post?.id.asInt,
+                                 comment: comment,
+                                 auth: auth,
+                                 serverHost: post?.ap_id.host )
     }
     
     func posts(_ community: FederatedCommunity? = nil,

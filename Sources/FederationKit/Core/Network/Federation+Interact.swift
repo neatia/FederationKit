@@ -14,7 +14,7 @@ public extension Federation {
                     score: Int,
                     auth: String? = nil) async -> FederatedPostResource? {
         
-        return await lemmy?.upvotePost(post.lemmy,
+        return await tryUsersLemmy(post.ap_id)?.upvotePost(post.lemmy,
                                        score: score,
                                        auth: auth)?.federated
     }
@@ -66,7 +66,7 @@ public extension Federation {
     func upvoteComment(_ comment: FederatedComment,
                        score: Int,
                        auth: String? = nil) async -> FederatedCommentResource? {
-        return await lemmy?.upvoteComment(comment.lemmy,
+        return await tryUsersLemmy(comment.ap_id)?.upvoteComment(comment.lemmy,
                                           score: score,
                                           auth: auth)?.federated
     }
@@ -100,7 +100,7 @@ public extension Federation {
     func saveComment(_ comment: FederatedComment,
                      save: Bool,
                      auth: String? = nil) async -> FederatedCommentResource? {
-        return await lemmy?.saveComment(comment.lemmy,
+        return await tryUsersLemmy(comment.ap_id)?.saveComment(comment.lemmy,
                                         save: save,
                                         auth: auth)?.comment_view.federated
     }

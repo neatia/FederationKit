@@ -46,7 +46,12 @@ public class Federation {
     }
     
     public func set(_ server: FederationServer) {
-        self.currentServer = add(server)
+        if let existingServer = servers[server.host] {
+            //expected to have authentication if switching from and to
+            self.currentServer = existingServer
+        } else {
+            self.currentServer = add(server)
+        }
     }
     
     public convenience init(_ type: FederatedInstanceType, baseUrl: String) {
@@ -121,6 +126,11 @@ public class Federation {
         }
     }
     
+    func isHome(_ person: FederatedPerson? = nil) -> Bool {
+        let resource = self.users[person?.actor_id.host ?? ""]
+        return (resource ?? currentUser)?.host == currentServer?.host
+    }
+    
     public func user(for server: FederationServer? = nil) -> FederationUser? {
         guard let server = server ?? currentServer,
               let user = server.currentUser else { return nil }
@@ -152,8 +162,12 @@ public class Federation {
         return self.auths[server.host]
     }
     
-    public func isAuthenticated(for server: FederationServer) -> Bool {
-        server.currentUser != nil || auth(for: server) != nil
+    public func isAuthenticated(for server: FederationServer? = nil) -> Bool {
+        if let server {
+            return auth(for: server) != nil
+        } else {
+            return currentUser != nil
+        }
     }
     
     public func logout(for server: FederationServer) {

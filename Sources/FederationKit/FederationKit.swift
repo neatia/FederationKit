@@ -38,7 +38,6 @@ public extension FederationKit {
         
     //TODO:
     static func isAuthenticated(for server: FederationServer? = nil) -> Bool {
-        guard let server = server ?? current.currentServer else  { return false }
         return current.isAuthenticated(for: server)
     }
     
@@ -63,6 +62,14 @@ public extension FederationKit {
     
     static func isMe(_ person: FederatedPerson) -> Bool {
         current.isMe(person)
+    }
+    
+    static func isHome(_ person: FederatedPerson? = nil) -> Bool {
+        current.isHome(person)
+    }
+    
+    static func canInteract(_ host: String?) -> Bool {
+        current.currentUser?.host == host
     }
     
     static func addUser(_ user: FederationUser) {

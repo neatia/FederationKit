@@ -55,7 +55,7 @@ public extension Federation {
                        post: FederatedPost,
                        parent: FederatedComment? = nil,
                        auth: String? = nil) async -> FederatedComment? {
-        return await lemmy?.createComment(content,
+        return await tryUsersLemmy(post.ap_id)?.createComment(content,
                                           post: post.lemmy,
                                           parent: parent?.lemmy,
                                           auth: auth ?? lemmy?.auth)?.federated
