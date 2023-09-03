@@ -21,13 +21,11 @@ public extension Federation {
     
     @discardableResult
     func createPost(_ title: String,
-                    content: String,
                     url: String? = nil,
                     body: String? = nil,
                     community: FederatedCommunity,
                     auth: String? = nil) async -> FederatedPostResource? {
         return await lemmy?.createPost(title,
-                                       content: content,
                                        url: url,
                                        body: body,
                                        community: community.lemmy,
@@ -35,13 +33,11 @@ public extension Federation {
     }
     @discardableResult
     static func createPost(_ title: String,
-                           content: String,
                            url: String? = nil,
                            body: String? = nil,
                            community: FederatedCommunity,
                            auth: String? = nil) async -> FederatedPostResource? {
         return await shared.createPost(title,
-                                       content: content,
                                        url: url,
                                        body: body,
                                        community: community,
