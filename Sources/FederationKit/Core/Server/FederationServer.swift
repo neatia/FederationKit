@@ -95,6 +95,9 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         case .lemmy:
             lemmy?.auth = token
             currentUser = resource
+        case .automatic:
+            lemmy?.auth = token
+            currentUser = resource
         default:
             break
         }

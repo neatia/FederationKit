@@ -19,7 +19,7 @@ public class Federation {
     
     //The keys are always the `host (domain)` variable of FederationServer
     private var metadatas: [String: FederationMetadata] = [:]
-    private var servers: [String:FederationServer] = [:]
+    internal var servers: [String:FederationServer] = [:]
     //For now clients should handle multiple users per domain,
     //while this kit handles a single authentication per domain (not per instanceType)
     private var users: [String:FederationUser] = [:]
@@ -97,6 +97,7 @@ public class Federation {
         self.users[host] = .init(resource)
         
         if let token {
+            auths[host] = token
             servers[host]?.updateAuth(auth: token, user: resource)
         }
     }
@@ -132,10 +133,15 @@ public class Federation {
         return self.metadatas[server.host]
     }
     
+    public func server(for host: String) -> FederationServer? {
+        return servers[host]
+    }
+    
     public func setAuth(_ token: String, user resource: UserResource) {
+        addUser(resource, auth: token)
+        
         let host = resource.host
-        self.auths[host] = token
-        self.servers[host]?.updateAuth(auth: token, user: resource)
+        
         if host == currentServer?.host {
             currentServer?.updateAuth(auth: token, user: resource)
         }

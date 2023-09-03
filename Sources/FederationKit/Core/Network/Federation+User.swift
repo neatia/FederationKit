@@ -173,3 +173,143 @@ public extension Federation {
                                              open_links_in_new_tab: open_links_in_new_tab)
     }
 }
+
+//MARK: Modify
+
+/*
+ Despite the currentServer, these interactions should
+ route to the currentUser's instance at all times
+ 
+ a primary use case, is when they are viewing their own profile
+ and want to edit something, without having to change their application's
+ context
+ 
+ */
+public extension Federation {
+    func deletePost(post_id: Int,
+                    deleted: Bool,
+                    auth: String? = nil) async -> FederatedPostResource? {
+        if let currentUser {
+            return await servers[currentUser.host]?.lemmy?.deletePost(post_id: post_id,
+                                                                      deleted: deleted,
+                                                                      auth: auth)?.post_view.federated
+            
+        } else {
+            return await lemmy?.deletePost(post_id: post_id,
+                                           deleted: deleted,
+                                           auth: auth)?.post_view.federated
+        }
+    }
+    static func deletePost(_ post: FederatedPost,
+                           deleted: Bool,
+                           auth: String? = nil) async -> FederatedPostResource? {
+        
+        return await shared.deletePost(post_id: post.id.asInt,
+                                       deleted: deleted,
+                                       auth: auth)
+    }
+    
+    @discardableResult
+    func editPost(_ postId: Int,
+                    title: String,
+                    url: String? = nil,
+                    body: String? = nil,
+                    nsfw: Bool = false,
+                    language_id: Int? = nil,
+                    auth: String? = nil) async -> FederatedPostResource? {
+        
+        if let currentUser {
+            return await servers[currentUser.host]?.lemmy?.editPost(postId,
+                                                                    title: title,
+                                                                    url: url,
+                                                                    body: body,
+                                                                    nsfw: nsfw,
+                                                                    language_id: language_id,
+                                                                    auth: auth)?.federated
+        } else {
+            return await lemmy?.editPost(postId,
+                                         title: title,
+                                         url: url,
+                                         body: body,
+                                         nsfw: nsfw,
+                                         language_id: language_id,
+                                         auth: auth ?? lemmy?.auth)?.federated
+        }
+    }
+    @discardableResult
+    static func editPost(_ postId: String,
+                         title: String,
+                         url: String? = nil,
+                         body: String? = nil,
+                         nsfw: Bool = false,
+                         language_id: Int? = nil,
+                         auth: String? = nil) async -> FederatedPostResource? {
+        
+        return await shared.editPost(postId.asInt,
+                                     title: title,
+                                     url: url,
+                                     body: body,
+                                     nsfw: nsfw,
+                                     language_id: language_id,
+                                     auth: auth)
+    }
+        
+        
+    
+    func deleteComment(comment_id: Int,
+                       deleted: Bool,
+                       auth: String? = nil) async -> FederatedCommentResource? {
+        
+        if let currentUser {
+            return await servers[currentUser.host]?.lemmy?.deleteComment(comment_id: comment_id,
+                                                                         deleted: deleted,
+                                                                         auth: auth)?.comment_view.federated
+        } else {
+            return await lemmy?.deleteComment(comment_id: comment_id,
+                                              deleted: deleted,
+                                              auth: auth)?.comment_view.federated
+        }
+    }
+    static func deleteComment(_ comment: FederatedComment,
+                              deleted: Bool,
+                              auth: String? = nil) async -> FederatedCommentResource? {
+        return await shared.deleteComment(comment_id: comment.id.asInt,
+                                          deleted: deleted,
+                                          auth: auth)
+    }
+    
+    @discardableResult
+    func editComment(_ comment_id: Int,
+                     content: String? = nil,
+                     language_id: Int? = nil,
+                     form_id: String? = nil,
+                     auth: String? = nil) async -> FederatedComment? {
+        
+        if let currentUser {
+            return await servers[currentUser.host]?.lemmy?.editComment(comment_id,
+                                                                       content: content,
+                                                                       language_id: language_id,
+                                                                       form_id: form_id,
+                                                                       auth: auth)?.federated
+        } else {
+            return await lemmy?.editComment(comment_id,
+                                            content: content,
+                                            language_id: language_id,
+                                            form_id: form_id,
+                                            auth: auth ?? lemmy?.auth)?.federated
+        }
+    }
+    @discardableResult
+    static func editComment(_ comment_id: String,
+                            content: String? = nil,
+                            language_id: Int? = nil,
+                            form_id: String? = nil,
+                            auth: String? = nil) async -> FederatedComment? {
+        
+        return await shared.editComment(comment_id.asInt,
+                                        content: content,
+                                        language_id: language_id,
+                                        form_id: form_id,
+                                        auth: auth)
+    }
+}

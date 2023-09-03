@@ -48,38 +48,7 @@ public extension Federation {
                                        auth: auth)
     }
     
-    @discardableResult
-    func editPost(_ postId: Int,
-                    title: String,
-                    url: String? = nil,
-                    body: String? = nil,
-                    nsfw: Bool = false,
-                    language_id: Int? = nil,
-                    auth: String? = nil) async -> FederatedPostResource? {
-        return await lemmy?.editPost(postId,
-                                     title: title,
-                                     url: url,
-                                     body: body,
-                                     nsfw: nsfw,
-                                     language_id: language_id,
-                                     auth: auth ?? lemmy?.auth)?.federated
-    }
-    @discardableResult
-    static func editPost(_ postId: String,
-                         title: String,
-                         url: String? = nil,
-                         body: String? = nil,
-                         nsfw: Bool = false,
-                         language_id: Int? = nil,
-                         auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.editPost(postId.asInt,
-                                     title: title,
-                                     url: url,
-                                     body: body,
-                                     nsfw: nsfw,
-                                     language_id: language_id,
-                                     auth: auth)
-    }
+    
     
     @discardableResult
     func createComment(_ content: String,
@@ -102,28 +71,5 @@ public extension Federation {
                                           auth: auth)
     }
     
-    @discardableResult
-    func editComment(_ comment_id: Int,
-                     content: String? = nil,
-                     language_id: Int? = nil,
-                     form_id: String? = nil,
-                     auth: String? = nil) async -> FederatedComment? {
-        return await lemmy?.editComment(comment_id,
-                                        content: content,
-                                        language_id: language_id,
-                                        form_id: form_id,
-                                        auth: auth ?? lemmy?.auth)?.federated
-    }
-    @discardableResult
-    static func editComment(_ comment_id: String,
-                            content: String? = nil,
-                            language_id: Int? = nil,
-                            form_id: String? = nil,
-                            auth: String? = nil) async -> FederatedComment? {
-        return await shared.editComment(comment_id.asInt,
-                                        content: content,
-                                        language_id: language_id,
-                                        form_id: form_id,
-                                        auth: auth)
-    }
+    
 }

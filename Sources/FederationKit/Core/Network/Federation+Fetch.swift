@@ -146,7 +146,7 @@ public extension Federation {
         } else if resolver.useBase == false,
                   let domain = resolver.domain {
             
-            let instancedLemmy: Lemmy = .init(apiUrl: domain)
+            let instancedLemmy: Lemmy = shared.server(for: domain.host)?.lemmy ?? .init(apiUrl: domain)
             
             return await instancedLemmy.posts(community?.lemmy,
                                               id: resolver.id,
@@ -225,7 +225,7 @@ public extension Federation {
         
         if resolver.useBase == false,
            let domain = resolver.domain {
-            let instancedLemmy: Lemmy = .init(apiUrl: domain)
+            let instancedLemmy: Lemmy = shared.server(for: domain.host)?.lemmy ?? .init(apiUrl: domain)
             return await instancedLemmy.comments(post?.lemmy,
                                                  postId: resolver.sourceId,
                                                  comment: comment?.lemmy,

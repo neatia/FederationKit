@@ -46,21 +46,6 @@ public extension Federation {
                                        auth: auth)
     }
     
-    func deletePost(post_id: Int,
-                    deleted: Bool,
-                    auth: String? = nil) async -> FederatedPostResource? {
-        return await lemmy?.deletePost(post_id: post_id,
-                                       deleted: deleted,
-                                       auth: auth)?.post_view.federated
-    }
-    static func deletePost(_ post: FederatedPost,
-                           deleted: Bool,
-                           auth: String? = nil) async -> FederatedPostResource? {
-        return await shared.deletePost(post_id: post.id.asInt,
-                                       deleted: deleted,
-                                       auth: auth)
-    }
-    
     func savePost(_ post: FederatedPost,
                   save: Bool,
                   auth: String? = nil) async -> FederatedPostResource? {
@@ -109,21 +94,6 @@ public extension Federation {
         return await shared.removeComment(comment_id: comment.id.asInt,
                                           removed: removed,
                                           reason: reason,
-                                          auth: auth)
-    }
-    
-    func deleteComment(comment_id: Int,
-                       deleted: Bool,
-                       auth: String? = nil) async -> FederatedCommentResource? {
-        return await lemmy?.deleteComment(comment_id: comment_id,
-                                          deleted: deleted,
-                                          auth: auth)?.comment_view.federated
-    }
-    static func deleteComment(_ comment: FederatedComment,
-                              deleted: Bool,
-                              auth: String? = nil) async -> FederatedCommentResource? {
-        return await shared.deleteComment(comment_id: comment.id.asInt,
-                                          deleted: deleted,
                                           auth: auth)
     }
     
