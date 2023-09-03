@@ -15,11 +15,12 @@ extension FederatedInstance {
 public enum FederatedInstanceType: String, Codable {
     case lemmy
     case mastodon
+    case rss
     case unknown
     case automatic
     
     public static var validInstances: [FederatedInstanceType] {
-        [.lemmy, .mastodon]
+        [.lemmy, .mastodon, .rss]
     }
 }
 

@@ -151,6 +151,10 @@ public extension Federation {
                                           saved_only: saved_only,
                                           location: location?.lemmy).compactMap { $0.federated } ?? []
             }
+        case .rss:
+            //TODO: pagination
+            print("{TEST}\(currentServer?.baseUrl)")
+            return (await rss?.parseAsyncAwait())?.rssFeed?.items?.map { $0.asResource } ?? []
         case .mastodon:
             //TODO: pagination
             return (try? await mastodon?.run(Timelines.public()).value.map { $0.asResource }) ?? []

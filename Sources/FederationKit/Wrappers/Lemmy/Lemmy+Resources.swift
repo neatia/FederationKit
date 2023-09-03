@@ -193,7 +193,8 @@ extension Community {
               inbox_url: self.inbox_url,
               hidden: self.hidden,
               posting_restricted_to_mods: self.posting_restricted_to_mods,
-              instance_id: self.instance_id.asString)
+              instance_id: self.instance_id.asString,
+              instanceType: .lemmy)
     }
 }
 

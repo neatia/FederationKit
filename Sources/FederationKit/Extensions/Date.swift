@@ -13,11 +13,7 @@ extension String {
         return Calendar.dateFormatter.date(from: self)
     }
     var serverTimeAsDate: Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        dateFormatter.timeZone = TimeZone(abbreviation: "GMT+00:00")
-        
-        let date = dateFormatter.date(from: self)
+        let date = Calendar.serverTimeFormatter.date(from: self)
         return date
     }
 }
@@ -36,6 +32,10 @@ extension Date {
     }
     var asString: String {
         return Calendar.dateFormatter.string(from: self)
+    }
+    
+    var asServerTimeString: String {
+        return Calendar.serverTimeFormatter.string(from: self)
     }
     
     var asProperString: String {
@@ -210,6 +210,13 @@ extension Calendar {
         var components = dateComponents(in: timeZone, from: date)
         components.timeZone = self.timeZone
         return self.date(from: components)
+    }
+    
+    static var serverTimeFormatter: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT+00:00")
+        return dateFormatter
     }
     
     static var dateFormatter: DateFormatter {

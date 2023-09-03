@@ -58,7 +58,18 @@ public extension FederatedCommunity {
 
 extension FederatedCommunity {
     public var displayName: String {
-        "!"+self.name+"@"+self.actor_id.host
+        switch instanceType {
+        case .lemmy:
+            return "!"+self.name+"@"+self.actor_id.host
+        case .mastodon:
+            return self.name
+        default:
+            if self.actor_id.host.isEmpty == false {
+                return self.name+"@"+self.actor_id.host
+            } else {
+                return self.name
+            }
+        }
     }
 }
 
@@ -81,6 +92,7 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
     public let hidden: Bool
     public let posting_restricted_to_mods: Bool
     public let instance_id: String
+    public let instanceType: FederatedInstanceType
     
     //TODO: revisit necessity of this, will have to be removed from LemmyKit as well
     public var ap_id: String? = nil
@@ -103,7 +115,8 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
         inbox_url: String?,
         hidden: Bool,
         posting_restricted_to_mods: Bool,
-        instance_id: String
+        instance_id: String,
+        instanceType: FederatedInstanceType
     ) {
         self.id = id
         self.name = name
@@ -123,6 +136,7 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
         self.hidden = hidden
         self.posting_restricted_to_mods = posting_restricted_to_mods
         self.instance_id = instance_id
+        self.instanceType = instanceType
     }
 }
 
@@ -192,7 +206,8 @@ public extension FederatedCommunity {
             inbox_url: nil,
             hidden: false,
             posting_restricted_to_mods: false,
-            instance_id: "0"
+            instance_id: "0",
+            instanceType: .lemmy
         )
     }
 }

@@ -8,6 +8,7 @@
 import Foundation
 import LemmyKit
 import MastodonKit
+import FeedKit
 
 extension Federation {
     var lemmy: Lemmy? {
@@ -28,6 +29,10 @@ extension Federation {
     
     var mastodon: MastodonKit.Client? {
         currentServer?.mastodon
+    }
+    
+    var rss: FeedParser? {
+        currentServer?.rss
     }
     
     var isAutomatic: Bool {

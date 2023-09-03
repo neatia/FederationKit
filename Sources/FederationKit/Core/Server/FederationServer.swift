@@ -8,6 +8,7 @@
 import Foundation
 import LemmyKit
 import MastodonKit
+import FeedKit
 
 //Clients
 public protocol AnyFederatedServer {
@@ -27,23 +28,31 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
     public var baseUrl: String
     public var host: String
     public var currentUser: UserResource? = nil
-    public init(_ type: FederatedInstanceType, host: String) {
+    public init(_ type: FederatedInstanceType, host baseUrl: String) {
         self.type = type
-        let sanitized = FederationKit.sanitize(host)
-        let serverBaseUrl = sanitized.baseUrl ?? host
-        self.baseUrl = serverBaseUrl
-        self.host = sanitized.host ?? host
+        
+        let sanitized = FederationKit.sanitize(baseUrl)
+        
+        /*
+         We do not want to set the baseUrl from the
+         sanitized result yet, since RSS feeds can
+         have path components
+         */
+        self.baseUrl = baseUrl
+        
+        self.host = sanitized.host ?? baseUrl
         
         self.connect()
     }
     
     //Automatic instancetype detection
-    public init(host: String) {
+    public init(host baseUrl: String) {
         self.type = .automatic
-        let sanitized = FederationKit.sanitize(host)
-        let serverBaseUrl = sanitized.baseUrl ?? host
-        self.baseUrl = serverBaseUrl
-        self.host = sanitized.host ?? host
+        let sanitized = FederationKit.sanitize(baseUrl)
+        
+        self.baseUrl = baseUrl
+        
+        self.host = sanitized.host ?? baseUrl
     }
     
     //auth can change (jwt token usually)
@@ -61,26 +70,35 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
     
     public var isOnline: Bool {
         switch type {
+        case .rss:
+            return rss != nil
         case .lemmy:
             return lemmy != nil
         case .mastodon:
             return mastodon != nil
         case .automatic:
-            return lemmy != nil || mastodon != nil
+            return lemmy != nil || mastodon != nil || rss != nil
         default:
             return false
         }
     }
     
     mutating public func connect() {
+        let sanitized = FederationKit.sanitize(host)
+        let sanitizedBaseUrl = sanitized.baseUrl ?? baseUrl
         switch type {
         case .lemmy:
-            lemmy = .init(apiUrl: baseUrl, base: false)
+            lemmy = .init(apiUrl: sanitizedBaseUrl, base: false)
         case .mastodon:
-            mastodon = .init(baseURL: baseUrl)
+            mastodon = .init(baseURL: sanitizedBaseUrl)
+        case .rss:
+            guard let url = URL(string: baseUrl) else { return }
+            rss = .init(URL: url)
         case .automatic:
-            lemmy = .init(apiUrl: baseUrl, base: false)
-            mastodon = .init(baseURL: baseUrl)
+            lemmy = .init(apiUrl: sanitizedBaseUrl, base: false)
+            mastodon = .init(baseURL: sanitizedBaseUrl)
+            guard let url = URL(string: baseUrl) else { return }
+            rss = .init(URL: url)
         default:
             break
         }
@@ -114,6 +132,7 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
     }
     
     //Protocol values
+    public var rss: FeedParser? = nil
     public var lemmy: Lemmy? = nil
     public var mastodon: MastodonKit.Client? = nil
 }

@@ -18,7 +18,7 @@ extension Status {
               community_id: "",
               removed: false,
               locked: false,
-              published: self.createdAt.asString,
+              published: self.createdAt.asServerTimeString,
               updated: nil,
               deleted: false,
               nsfw: self.sensitive == true,
@@ -41,7 +41,7 @@ extension Status {
               score: 0,
               upvotes: self.favouritesCount,
               downvotes: 0,
-              published: self.createdAt.asString,
+              published: self.createdAt.asServerTimeString,
               newest_comment_time_necro: self.createdAt.asString,
               newest_comment_time: self.createdAt.asString,
               featured_community: false,
@@ -74,9 +74,6 @@ extension Status {
     }
 }
 
-
-
-
 extension Account {
     var federatedCommunity: FederatedCommunity {
         .init(id: self.id,
@@ -84,11 +81,11 @@ extension Account {
               title: self.username,
               description: self.note,
               removed: self.locked,
-              published: self.createdAt.asString,
+              published: self.createdAt.asServerTimeString,
               updated: nil,
               deleted: self.locked,
               nsfw: false,
-              actor_id: self.username,
+              actor_id: self.url,
               local: false,
               icon: self.avatar,
               banner: nil,//maybe mastodon instance banner?
@@ -96,7 +93,8 @@ extension Account {
               inbox_url: self.url,
               hidden: false,
               posting_restricted_to_mods: false,
-              instance_id: "-1")
+              instance_id: "-1",
+              instanceType: .mastodon)
     }
     
     var federatedPerson: FederatedPerson {
@@ -105,7 +103,7 @@ extension Account {
               display_name: self.displayName,
               avatar: self.avatar,//avatarStatic as well
               banned: self.locked,
-              published: self.createdAt.asString,
+              published: self.createdAt.asServerTimeString,
               updated: nil,
               actor_id: self.url,
               bio: self.note,
