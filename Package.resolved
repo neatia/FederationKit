@@ -1,12 +1,21 @@
 {
   "pins" : [
     {
+      "identity" : "feedkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pexavc/FeedKit",
+      "state" : {
+        "branch" : "master",
+        "revision" : "f216bcf2a76f63b11ecf98e7021120f2fa395cbb"
+      }
+    },
+    {
       "identity" : "lemmykit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pexavc/LemmyKit",
       "state" : {
         "branch" : "main",
-        "revision" : "43cc856ce27ea098bdd0dbf8911a145eceb7dea1"
+        "revision" : "8e185744236de9a9f45d129fd3c3e955423f40ca"
       }
     },
     {

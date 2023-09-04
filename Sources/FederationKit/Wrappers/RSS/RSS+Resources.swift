@@ -2,7 +2,7 @@
 //  File.swift
 //  
 //
-//  Created by Ritesh Pakala on 9/3/23.
+//  Created by PEXAVC on 9/3/23.
 //
 
 import Foundation
@@ -10,8 +10,13 @@ import FeedKit
 
 extension RSSFeedItem {
     var id: String {
-        self.link ?? UUID().uuidString
+        self.guid?.value ?? (self.link ?? "")
     }
+    
+    var name: String {
+        self.link?.host ?? self.id
+    }
+    
     public var federatedPost: FederatedPost {
         .init(id: self.id,
               name: self.title ?? "",
@@ -55,7 +60,7 @@ extension RSSFeedItem {
     
     var asResource: FederatedPostResource {
         .init(post: self.federatedPost,
-              creator: self.source?.federatedPerson ?? .mock,
+              creator: self.federatedPerson,
               community: self.categories?.first?.federatedCommunity ?? .mock,
               creator_banned_from_community: false,
               counts: self.federatedCounts,
@@ -68,9 +73,85 @@ extension RSSFeedItem {
     }
 }
 
+//MARK: Community
+
+extension RSSFeedItem {
+    var federatedCommunity: FederatedCommunity {
+        let categoryName: String = self.categories?.first?.value ?? ""
+        return .init(id: self.id,
+              name: categoryName,
+              title: categoryName,
+              description: categoryName,
+              removed: false,
+              published: Date().asServerTimeString,
+              updated: nil,
+              deleted: false,
+              nsfw: false,
+              actor_id: self.link ?? name,
+              local: false,
+              icon: nil,
+              banner: nil,
+              followers_url: "",
+              inbox_url: "",
+              hidden: false,
+              posting_restricted_to_mods: false,
+              instance_id: "-1",
+              instanceType: .rss)
+    }
+    
+    var communityCounts: FederatedCommunityAggregates {
+        .init(id: self.id,
+              community_id: self.id.asInt,
+              subscribers: 0,
+              posts: 0,
+              comments: 0,
+              published: Date().asServerTimeString,
+              users_active_day: 0,
+              users_active_week: 0,
+              users_active_month: 0,
+              users_active_half_year: 0,
+              hot_rank: 0)
+    }
+    
+    var asCommunityResource: FederatedCommunityResource {
+        .init(community: self.federatedCommunity,
+              subscribed: .notSubscribed,
+              blocked: false,
+              counts: self.communityCounts)
+    }
+}
+
+//MARK: Person
+extension RSSFeedItem {
+    var federatedPerson: FederatedPerson {
+        .init(id: self.id,
+              name: name,
+              display_name: nil,
+              avatar: nil,//avatarStatic as well
+              banned: false,
+              published: Date().asServerTimeString,
+              updated: nil,
+              actor_id: self.link ?? (name),
+              bio: self.description,
+              local: false,//match actorid to client baseurl
+              banner: nil,
+              deleted: false,
+              inbox_url: nil,
+              matrix_user_id: nil,
+              admin: false,
+              bot_account: false,
+              ban_expires: nil,
+              instance_id: "-12",
+              instanceType: .rss)
+    }
+}
+
+
+/* These don't seem reliable */
+
 extension RSSFeedItemSource {
     var id: String {
-        self.attributes?.url ?? ""
+        self.attributes?.url ?? (self.value ?? "")
     }
     
     var federatedPerson: FederatedPerson {
@@ -81,7 +162,7 @@ extension RSSFeedItemSource {
               banned: false,
               published: Date().asServerTimeString,
               updated: nil,
-              actor_id: self.attributes?.url ?? "",
+              actor_id: self.attributes?.url ?? (self.value ?? ""),
               bio: self.value ?? "",
               local: false,//match actorid to client baseurl
               banner: nil,

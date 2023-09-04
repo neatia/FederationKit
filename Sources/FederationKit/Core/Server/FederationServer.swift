@@ -9,6 +9,7 @@ import Foundation
 import LemmyKit
 import MastodonKit
 import FeedKit
+import Combine
 
 //Clients
 public protocol AnyFederatedServer {
@@ -135,6 +136,68 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
     public var rss: FeedParser? = nil
     public var lemmy: Lemmy? = nil
     public var mastodon: MastodonKit.Client? = nil
+    
+    public struct Metadata {
+        public var title: String
+        public var link: String
+        public var description: String
+        public var managingEditor: String
+        public var webmaster: String
+        public var imageURLString: String?
+        public var published: String
+    }
 }
 
+public extension FederationServer {
+    func fetchDetails() async -> FederationServer.Metadata? {
+        guard let details = await rss?.parseAsyncAwait()?.rssFeed else {
+            return nil
+        }
+        let metadata: FederationServer.Metadata = .init(title: details.title ?? "",
+                                                        link: details.link ?? "",
+                                                        description: details.description ?? "",
+                                                        managingEditor: details.managingEditor ?? "",
+                                                        webmaster: details.webMaster ?? "",
+                                                        imageURLString: details.image?.url,
+                                                        published: details.pubDate?.asServerTimeString ?? "")
+        
+        
+        return metadata
+    }
+    
+    func fetchServerAsCommunity() async -> FederatedCommunityResource? {
+        guard let metadata = await fetchDetails() else {
+            return nil
+        }
+        return serverAsCommunityResource(metadata)
+    }
+    
+    func serverAsCommunityResource(_ metadata: FederationServer.Metadata) -> FederatedCommunityResource {
+        .init(community: serverAsCommunity(metadata),
+              subscribed: .notSubscribed,
+              blocked: false,
+              counts: .mock)
+    }
+    
+    func serverAsCommunity(_ metadata: FederationServer.Metadata) -> FederatedCommunity {
+        return .init(id: self.baseUrl.hashValue.asString,
+                     name: host,
+                     title: metadata.title,
+                     description: metadata.description,
+                     removed: false,
+                     published: metadata.published,
+                     deleted: false,
+                     nsfw: false,
+                     actor_id: self.baseUrl,
+                     local: false,
+                     icon: metadata.imageURLString,
+                     banner: nil,
+                     followers_url: metadata.link,
+                     inbox_url: "",
+                     hidden: false,
+                     posting_restricted_to_mods: false,
+                     instance_id: "-1",
+                     instanceType: self.type)
+    }
+}
 

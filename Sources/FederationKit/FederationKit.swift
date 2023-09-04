@@ -35,6 +35,10 @@ public extension FederationKit {
     static var currentInstanceType: FederatedInstanceType {
         return current.currentInstanceType
     }
+    
+    static var currentServer: FederationServer? {
+        return current.currentServer
+    }
         
     //TODO:
     static func isAuthenticated(for server: FederationServer? = nil) -> Bool {

@@ -61,7 +61,7 @@ extension FederatedCommunity {
         switch instanceType {
         case .lemmy:
             return "!"+self.name+"@"+self.actor_id.host
-        case .mastodon:
+        case .mastodon, .rss:
             return self.name
         default:
             if self.actor_id.host.isEmpty == false {
