@@ -20,8 +20,8 @@ public class FederationKit {
     }
     
     static func sanitize(_ base: String) -> (host: String?, baseUrl: String?) {
-        let value: String = (base.contains("http") ? "" : "https://") + base
-        
+        let hasHttp: Bool = base.lowercased().range(of: "http")?.isEmpty == false
+        let value: String = (hasHttp ? "" : "https://") + base
         let host: String = value.host
         let url: String = "https://" + host
         

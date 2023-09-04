@@ -65,6 +65,7 @@ public extension Federation {
          Revise this logic, it's being built to support manifestst
          */
         case .rss:
+            FederationLog("Attemping RSS at location: \(location)", level: .debug)
             switch location {
             case .base:
                 
@@ -78,7 +79,8 @@ public extension Federation {
                     server.connect()
                     return (await server.rss?.parseAsyncAwait())?.rssFeed?.items?.map { $0.asResource } ?? []
                 } else {
-                    return []
+                    //TODO: pagination
+                    return (await rss?.parseAsyncAwait())?.rssFeed?.items?.map { $0.asResource } ?? []
                 }
             }
         case .mastodon:

@@ -43,6 +43,8 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         
         self.host = sanitized.host ?? baseUrl
         
+        //FederationLog("Server created: \(baseUrl) | \(host)", level: .debug)
+        
         self.connect()
     }
     
@@ -54,6 +56,8 @@ public struct FederationServer: Equatable, Codable, Identifiable, Hashable, AnyF
         self.baseUrl = baseUrl
         
         self.host = sanitized.host ?? baseUrl
+        
+        FederationLog("Server created: \(baseUrl) | \(host)", level: .debug)
     }
     
     //auth can change (jwt token usually)
