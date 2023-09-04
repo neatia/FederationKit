@@ -46,7 +46,9 @@ public class Federation {
     }
     
     public func set(_ server: FederationServer) {
-        if let existingServer = servers[server.host] {
+        if let existingServer = servers[server.host],
+           //Only apply if authenticated to persist
+           existingServer.currentUser != nil {
             //expected to have authentication if switching from and to
             self.currentServer = existingServer
         } else {
