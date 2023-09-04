@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import LemmyKit
 
 struct FetchResolver {
     var useBase: Bool
@@ -113,9 +114,13 @@ struct FetchResolver {
         
         switch location {
         case .source:
+            let lemmy: Lemmy = .init(apiUrl: community?.actor_id.host ?? "")
+            let resolved = await lemmy.resolveURL(post?.ap_id ?? "", auth: "")
+            
             resolver = .init(useBase: false,
                              actor: community?.actor_id,
-                             id: post?.id.asInt)
+                             id: post?.id.asInt,
+                             sourceId: resolved?.post?.post.id)
         case .peer(let host):
             let sourceId: Int?
             if host == post?.ap_id.host {
@@ -145,7 +150,7 @@ struct FetchResolver {
                              id: id)
         }
         
-        //print(resolver.description(context, from: "post", location: location ?? .base))
+        print(resolver.description(context, from: "post", location: location ?? .base))
         return resolver
     }
     
