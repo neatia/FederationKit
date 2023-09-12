@@ -73,7 +73,8 @@ public extension FederationKit {
     }
     
     static func canInteract(_ host: String?) -> Bool {
-        current.currentUser?.host == host
+        guard current.currentUser != nil else { return false }
+        return current.currentUser?.host == host
     }
     
     static func addUser(_ user: FederationUser) {

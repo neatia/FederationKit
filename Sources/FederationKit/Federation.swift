@@ -179,9 +179,7 @@ public class Federation {
             currentServer?.removeAuth()
         }
         
-        if server.host == currentUser?.host {
-            self.currentUser = nil
-        }
+        self.currentUser = nil
     }
     
     public var currentInstanceType: FederatedInstanceType {

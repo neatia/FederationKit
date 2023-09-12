@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  FederatedResource.swift
 //  
 //
 //  Created by PEXAVC on 8/30/23.
