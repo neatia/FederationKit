@@ -105,6 +105,20 @@ public extension FederatedPerson {
             instance_id: "0",
             instanceType: .unknown)
     }
+    
+    static func plain(_ name: String = "personal") -> FederatedPerson {
+        .init(id: "\(Int.random(in: 0..<999999))",
+              name: name,
+              banned: false,
+              published: Date().asServerTimeString,
+              actor_id: name,
+              local: true, deleted: false,
+              inbox_url: nil,
+              admin: false,
+              bot_account: false,
+              instance_id: "-12",
+              instanceType: .local)
+    }
 }
 
 extension FederatedPerson {

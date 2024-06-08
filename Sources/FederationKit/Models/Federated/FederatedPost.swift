@@ -166,3 +166,77 @@ public struct FederatedPostAggregates: Codable, Identifiable, Hashable {
         self.reblog_count = reblog_count
     }
 }
+
+public extension FederatedPostResource {
+    static func plain(_ name: String,
+                      description: String? = nil,
+                      url: String? = nil,
+                      communityName: String? = nil,
+                      body: String? = nil,
+                      thumbnailUrl: String? = nil,
+                      published: Date? = nil) -> FederatedPostResource {
+        let published = published ?? Date()
+        
+        return .init(post: .plain(name,
+                                  url: url,
+                                  body: body,
+                                  thumbnailUrl: thumbnailUrl,
+                                  published: published),
+                     creator: .plain(url?.host ?? "personal"),
+                     community: .plain(communityName ?? (url?.host ?? "personal"), description: description ?? "", iconURL: url),
+                     creator_banned_from_community: false,
+                     counts: .mock(published: published),
+                     subscribed: .notSubscribed,
+                     saved: false,
+                     read: false,
+                     creator_blocked: false,
+                     unread_comments: 0)
+    }
+}
+
+public extension FederatedPost {
+    static func plain(_ name: String,
+                      url: String? = nil,
+                      body: String? = nil,
+                      thumbnailUrl: String? = nil,
+                      creator_id: String = "-1",
+                      published: Date = Date()) -> FederatedPost {
+        .init(id: "\(Int.random(in: 0..<999999))",
+              name: name,
+              url: url,
+              body: body,
+              creator_id: creator_id,
+              community_id: "-1",
+              removed: false,
+              locked: false,
+              published: published.asServerTimeString,
+              deleted: false,
+              nsfw: false,
+              thumbnail_url: thumbnailUrl,
+              ap_id: "local",
+              local: true,
+              language_id: 0,
+              featured_community: false,
+              featured_local: false,
+              instanceType: .local)
+    }
+}
+
+public extension FederatedPostAggregates {
+    static func mock(_ post_id: String = "",
+                     published: Date = Date()) -> FederatedPostAggregates {
+        .init(id: post_id,
+              post_id: post_id,
+              comments: 0,
+              score: 0,
+              upvotes: 0,
+              downvotes: 0,
+              published: published.asServerTimeString,
+              newest_comment_time_necro: published.asServerTimeString,
+              newest_comment_time: published.asServerTimeString,
+              featured_community: false,
+              featured_local: false,
+              hot_rank: 0,
+              hot_rank_active: 0)
+    }
+}

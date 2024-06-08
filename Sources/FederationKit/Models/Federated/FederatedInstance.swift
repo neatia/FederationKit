@@ -17,6 +17,7 @@ public enum FederatedInstanceType: String, Codable {
     case mastodon
     case rss
     case unknown
+    case local
     case automatic
     
     public static var validInstances: [FederatedInstanceType] {

@@ -182,7 +182,17 @@ public struct FederatedCommunityAggregates: Codable, Identifiable, Hashable {
 
 extension FederatedCommunityAggregates {
     public static var mock: FederatedCommunityAggregates {
-        .init(id: "0", community_id: 0, subscribers: 0, posts: 0, comments: 0, published: "\(Date())", users_active_day: 0, users_active_week: 0, users_active_month: 0, users_active_half_year: 0, hot_rank: 0)
+        .init(id: "0",
+              community_id: 0,
+              subscribers: 0,
+              posts: 0,
+              comments: 0,
+              published: "\(Date())",
+              users_active_day: 0,
+              users_active_week: 0,
+              users_active_month: 0,
+              users_active_half_year: 0,
+              hot_rank: 0)
     }
 }
 
@@ -208,6 +218,32 @@ public extension FederatedCommunity {
             posting_restricted_to_mods: false,
             instance_id: "0",
             instanceType: .lemmy
+        )
+    }
+    
+    static func plain(_ name: String = "unknown",
+                      description: String = "Lorem Ipsum",
+                      iconURL: String? = nil) -> FederatedCommunity {
+        .init(
+            id: "0",
+            name: name,
+            title: name,
+            description: description,
+            removed: false,
+            published: "\(Date())",
+            updated: nil,
+            deleted: false,
+            nsfw: false,
+            actor_id: "",
+            local: false,
+            icon: iconURL ?? "https://media.tpt.cloud/nextavenue/uploads/2021/09/bobrossestate-01.jpg",
+            banner: nil,
+            followers_url: nil,
+            inbox_url: nil,
+            hidden: false,
+            posting_restricted_to_mods: false,
+            instance_id: "0",
+            instanceType: .local
         )
     }
 }
