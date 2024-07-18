@@ -35,17 +35,17 @@ public struct FederatedInstance: Codable, Identifiable, Hashable {
 
     public init(
         _ instanceType: FederatedInstanceType,
-        id: String,
-        domain: String,
-        published: String,
+        id: String? = nil,
+        domain: String? = nil,
+        published: String? = nil,
         updated: String? = nil,
         software: String? = nil,
         version: String? = nil
     ) {
         self.instanceType = instanceType
-        self.id = id
-        self.domain = domain
-        self.published = published
+        self.id = id ?? "-1"
+        self.domain = domain ?? "-1"
+        self.published = published ?? "-1"
         self.updated = updated
         self.software = software
         self.version = version

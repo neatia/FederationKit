@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Lemmy.swift
 //  
 //
 //  Created by PEXAVC on 8/30/23.
@@ -10,16 +10,22 @@ import LemmyKit
 
 extension FederatedInstances {
     var federated: FederatedInstanceList {
-        .init(linked: self.linked.map { $0.federated },
-              allowed: self.allowed.map { $0.federated },
-              blocked: self.blocked.map { $0.federated })
+        .init(linked: self.linked?.map {
+            $0.federated
+        } ?? [],
+              allowed: self.allowed?.map {
+            $0.federated
+        } ?? [],
+              blocked: self.blocked?.map {
+            $0.federated
+        } ?? [])
     }
 }
 
 extension Instance {
     var federated: FederatedInstance {
         .init(.lemmy,
-              id: self.id.asString,
+              id: self.id?.asString,
               domain: self.domain,
               published: self.published,
               updated: self.updated,
@@ -48,11 +54,31 @@ extension GetSiteResponse {
 
 extension MyUserInfo {
     var federated: UserResource {
-        .init(user: self.local_user_view.federated,
-              follows: self.follows.map { .init(person: $0.follower.federated, community: $0.community.federated) },
-              moderates: self.moderates.map { .init(person: $0.moderator.federated, community: $0.community.federated) },
-              community_blocks: self.community_blocks.map { .init(person: $0.person.federated, community: $0.community.federated) },
-              person_blocks: self.person_blocks.map { .init(person: $0.person.federated, target: $0.target.federated) },
+        .init(user: self.local_user_view?.federated,
+              follows: self.follows?.compactMap {
+            .init(
+                person: $0.follower?.federated,
+                community: $0.community?.federated
+            )
+        },
+              moderates: self.moderates?.compactMap {
+            .init(
+                person: $0.moderator?.federated,
+                community: $0.community?.federated
+            )
+        },
+              community_blocks: self.community_blocks?.compactMap {
+            .init(
+                person: $0.person?.federated,
+                community: $0.community?.federated
+            )
+        },
+              person_blocks: self.person_blocks?.compactMap {
+            .init(
+                person: $0.person?.federated,
+                target: $0.target?.federated
+            )
+        },
               discussion_languages: self.discussion_languages,
               instanceType: .lemmy)
     }
@@ -60,9 +86,9 @@ extension MyUserInfo {
 
 extension LocalUserView {
     var federated: UserInfo {
-        .init(metadata: self.local_user.federated,
-              person: self.person.federated,
-              counts: self.counts.federated)
+        .init(metadata: self.local_user?.federated,
+              person: self.person?.federated,
+              counts: self.counts?.federated)
     }
 }
 
@@ -72,16 +98,14 @@ extension LocalUser {
               person_id: self.person_id,
               show_nsfw: self.show_nsfw,
               theme: self.theme,
-              default_sort_type: self.default_sort_type.federated,
-              default_listing_type: self.default_listing_type.federated,
+              default_sort_type: self.default_sort_type?.federated,
+              default_listing_type: self.default_listing_type?.federated,
               interface_language: self.interface_language,
               show_avatars: self.show_avatars,
               send_notifications_to_email: self.send_notifications_to_email,
-              validator_time: self.validator_time,
               show_scores: self.show_scores,
               show_bot_accounts: self.show_bot_accounts,
               show_read_posts: self.show_read_posts,
-              show_new_post_notifs: self.show_new_post_notifs,
               email_verified: self.email_verified,
               accepted_application: self.accepted_application,
               open_links_in_new_tab: self.open_links_in_new_tab)
@@ -90,10 +114,10 @@ extension LocalUser {
 
 extension SiteView {
     var federated: FederatedSiteResource {
-        .init(site: self.site.federated,
-              local_site: self.local_site.federated,
-              local_site_rate_limit: self.local_site_rate_limit.federated,
-              counts: self.counts.federated)
+        .init(site: self.site?.federated,
+              local_site: self.local_site?.federated,
+              local_site_rate_limit: self.local_site_rate_limit?.federated,
+              counts: self.counts?.federated)
     }
 }
 
@@ -128,7 +152,7 @@ extension LocalSite {
               application_question: self.application_question,
               private_instance: self.private_instance,
               default_theme: self.default_theme,
-              default_post_listing_type: self.default_post_listing_type.federated,
+              default_post_listing_type: self.default_post_listing_type?.federated,
               hide_modlog_mod_names: self.hide_modlog_mod_names,
               application_email_admins: self.application_email_admins,
               slur_filter_regex: self.slur_filter_regex,
@@ -138,15 +162,14 @@ extension LocalSite {
               captcha_difficulty: self.captcha_difficulty,
               published: self.published,
               updated: self.updated,
-              registration_mode: self.registration_mode.federated,
+              registration_mode: self.registration_mode?.federated,
               reports_email_admins: self.reports_email_admins)
     }
 }
 
 extension LocalSiteRateLimit {
     var federated: FederatedSiteRateLimit {
-        .init(id: self.id,
-              local_site_id: self.local_site_id,
+        .init(local_site_id: self.local_site_id,
               message: self.message,
               message_per_second: self.message_per_second,
               post: self.post,
@@ -165,8 +188,7 @@ extension LocalSiteRateLimit {
 
 extension SiteAggregates {
     var federated: FederatedSiteAggregates {
-        .init(id: self.id,
-              site_id: self.site_id,
+        .init(site_id: self.site_id,
               users: self.users,
               posts: self.posts,
               comments: self.comments,
@@ -220,24 +242,24 @@ extension GetRepliesResponse {
 
 extension CommentReply {
     var federated: FederatedCommentReply {
-        .init(id: self.id.asString,
-              recipient_id: self.recipient_id.asString,
-              comment_id: self.comment_id.asString,
+        .init(id: self.id?.asString,
+              recipient_id: self.recipient_id?.asString,
+              comment_id: self.comment_id?.asString,
               read: self.read,
               published: self.published)
     }
 }
 extension CommentReplyView {
     var federated: FederatedCommentReplyResource {
-        .init(comment_reply: self.comment_reply.federated,
-              comment: self.comment.federated,
-              creator: self.creator.federated,
-              post: self.post.federated,
-              community: self.community.federated,
-              recipient: self.recipient.federated,
-              counts: self.counts.federated,
+        .init(comment_reply: self.comment_reply?.federated,
+              comment: self.comment?.federated,
+              creator: self.creator?.federated,
+              post: self.post?.federated,
+              community: self.community?.federated,
+              recipient: self.recipient?.federated,
+              counts: self.counts?.federated,
               creator_banned_from_community: self.creator_banned_from_community,
-              subscribed: self.subscribed.federated,
+              subscribed: self.subscribed?.federated,
               saved: self.saved,
               creator_blocked: self.creator_blocked)
     }
@@ -245,15 +267,15 @@ extension CommentReplyView {
 
 extension PersonMentionView {
     var federated: FederatedPersonMentionResource {
-        .init(person_mention: self.person_mention.federated,
-              comment: self.comment.federated,
-              creator: self.creator.federated,
-              post: self.post.federated,
-              community: self.community.federated,
-              recipient: self.recipient.federated,
-              counts: self.counts.federated,
+        .init(person_mention: self.person_mention?.federated,
+              comment: self.comment?.federated,
+              creator: self.creator?.federated,
+              post: self.post?.federated,
+              community: self.community?.federated,
+              recipient: self.recipient?.federated,
+              counts: self.counts?.federated,
               creator_banned_from_community: self.creator_banned_from_community,
-              subscribed: self.subscribed.federated,
+              subscribed: self.subscribed?.federated,
               saved: self.saved,
               creator_blocked: self.creator_blocked)
     }
@@ -261,9 +283,9 @@ extension PersonMentionView {
 
 extension PersonMention {
     var federated: FederatedPersonMention {
-        .init(id: self.id.asString,
-              recipient_id: self.recipient_id.asString,
-              comment_id: self.comment_id.asString,
+        .init(id: self.id?.asString,
+              recipient_id: self.recipient_id?.asString,
+              comment_id: self.comment_id?.asString,
               read: self.read,
               published: self.published)
     }
@@ -311,8 +333,8 @@ extension FederatedCommunity {
               local: self.local,
               icon: self.icon,
               banner: self.banner,
-              followers_url: self.followers_url,
-              inbox_url: self.inbox_url,
+//              followers_url: self.followers_url,
+//              inbox_url: self.inbox_url,
               hidden: self.hidden,
               posting_restricted_to_mods: self.posting_restricted_to_mods,
               instance_id: self.instance_id.asInt)
@@ -377,9 +399,9 @@ extension FederatedPerson {
               local: self.local,
               banner: self.banner,
               deleted: self.deleted,
-              inbox_url: self.inbox_url,
+//              inbox_url: self.inbox_url,
               matrix_user_id: self.matrix_user_id,
-              admin: self.admin,
+//              admin: self.admin,
               bot_account: self.bot_account,
               ban_expires: self.ban_expires,
               instance_id: self.instance_id.asInt)

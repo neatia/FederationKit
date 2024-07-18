@@ -123,7 +123,7 @@ public extension Federation {
     ) async -> FederatedPost? {
         return await lemmy?.report(post: post.lemmy,
                                    reason: reason,
-                                   auth: auth)?.post.federated
+                                   auth: auth)?.post?.federated
     }
     static func report(post: FederatedPost,
                        reason: String,
@@ -141,7 +141,7 @@ public extension Federation {
         
         return await lemmy?.report(comment: comment.lemmy,
                                    reason: reason,
-                                   auth: auth)?.comment_report_view.comment.federated
+                                   auth: auth)?.comment_report_view.comment?.federated
     }
     static func report(comment: FederatedComment,
                        reason: String,

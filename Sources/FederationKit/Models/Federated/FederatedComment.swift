@@ -26,26 +26,26 @@ public struct FederatedCommentResource: Codable, Hashable {
     public let my_vote: Int?
 
     public init(
-        comment: FederatedComment,
-        creator: FederatedPerson,
-        post: FederatedPost,
-        community: FederatedCommunity,
-        counts: FederatedCommentAggregates,
-        creator_banned_from_community: Bool,
-        subscribed: FederatedSubscribedType,
-        saved: Bool,
-        creator_blocked: Bool,
+        comment: FederatedComment?,
+        creator: FederatedPerson?,
+        post: FederatedPost?,
+        community: FederatedCommunity?,
+        counts: FederatedCommentAggregates?,
+        creator_banned_from_community: Bool?,
+        subscribed: FederatedSubscribedType?,
+        saved: Bool?,
+        creator_blocked: Bool?,
         my_vote: Int? = nil
     ) {
-        self.comment = comment
-        self.creator = creator
-        self.post = post
-        self.community = community
-        self.counts = counts
-        self.creator_banned_from_community = creator_banned_from_community
-        self.subscribed = subscribed
-        self.saved = saved
-        self.creator_blocked = creator_blocked
+        self.comment = comment ?? .mock
+        self.creator = creator ?? .mock
+        self.post = post ?? .mock
+        self.community = community ?? .mock
+        self.counts = counts ?? .mock
+        self.creator_banned_from_community = creator_banned_from_community ?? false
+        self.subscribed = subscribed ?? .notSubscribed
+        self.saved = saved ?? false
+        self.creator_blocked = creator_blocked ?? false
         self.my_vote = my_vote
     }
 }
@@ -89,35 +89,35 @@ public struct FederatedComment: Codable, Identifiable, Hashable {
     public let instanceType: FederatedInstanceType
     
     public init(
-        id: String,
-        creator_id: String,
-        post_id: String,
-        content: String,
-        removed: Bool,
-        published: String,
+        id: String? = nil,
+        creator_id: String? = nil,
+        post_id: String? = nil,
+        content: String? = nil,
+        removed: Bool? = nil,
+        published: String? = nil,
         updated: String? = nil,
-        deleted: Bool,
-        ap_id: String,
-        local: Bool,
-        path: String,
-        distinguished: Bool,
-        language_id: Int,
-        instanceType: FederatedInstanceType
+        deleted: Bool? = nil,
+        ap_id: String? = nil,
+        local: Bool? = nil,
+        path: String? = nil,
+        distinguished: Bool? = nil,
+        language_id: Int? = nil,
+        instanceType: FederatedInstanceType? = nil
     ) {
-        self.id = id
-        self.creator_id = creator_id
-        self.post_id = post_id
-        self.content = content
-        self.removed = removed
-        self.published = published
-        self.updated = updated
-        self.deleted = deleted
-        self.ap_id = ap_id
-        self.local = local
-        self.path = path
-        self.distinguished = distinguished
-        self.language_id = language_id
-        self.instanceType = instanceType
+        self.id = id ?? "-1"
+        self.creator_id = creator_id ?? "-1"
+        self.post_id = post_id ?? "-1"
+        self.content = content ?? "mock content"
+        self.removed = removed ?? false
+        self.published = published ?? "-1"
+        self.updated = updated ?? "-1"
+        self.deleted = deleted ?? false
+        self.ap_id = ap_id ?? "-1"
+        self.local = local ?? false
+        self.path = path ?? ""
+        self.distinguished = distinguished ?? false
+        self.language_id = language_id ?? -1
+        self.instanceType = instanceType ?? .unknown
     }
 }
 
@@ -132,23 +132,23 @@ public struct FederatedCommentAggregates: Codable, Identifiable, Hashable {
     public let hot_rank: Int
 
     public init(
-        id: String,
-        comment_id: String,
-        score: Int,
-        upvotes: Int,
-        downvotes: Int,
-        published: String,
-        child_count: Int,
-        hot_rank: Int
+        id: String? = nil,
+        comment_id: String? = nil,
+        score: Int? = nil,
+        upvotes: Int? = nil,
+        downvotes: Int? = nil,
+        published: String? = nil,
+        child_count: Int? = nil,
+        hot_rank: Int? = nil
     ) {
-        self.id = id
-        self.comment_id = comment_id
-        self.score = score
-        self.upvotes = upvotes
-        self.downvotes = downvotes
-        self.published = published
-        self.child_count = child_count
-        self.hot_rank = hot_rank
+        self.id = id ?? "-1"
+        self.comment_id = comment_id ?? "-1"
+        self.score = score ?? 0
+        self.upvotes = upvotes ?? 0
+        self.downvotes = downvotes ?? 0
+        self.published = published ?? "-1"
+        self.child_count = child_count ?? 0
+        self.hot_rank = hot_rank ?? 0
     }
 }
 
@@ -167,30 +167,30 @@ public struct FederatedCommentReplyResource: Codable, Hashable {
     public let my_vote: Int?
 
     public init(
-        comment_reply: FederatedCommentReply,
-        comment: FederatedComment,
-        creator: FederatedPerson,
-        post: FederatedPost,
-        community: FederatedCommunity,
-        recipient: FederatedPerson,
-        counts: FederatedCommentAggregates,
-        creator_banned_from_community: Bool,
-        subscribed: FederatedSubscribedType,
-        saved: Bool,
-        creator_blocked: Bool,
+        comment_reply: FederatedCommentReply? = nil,
+        comment: FederatedComment? = nil,
+        creator: FederatedPerson? = nil,
+        post: FederatedPost? = nil,
+        community: FederatedCommunity? = nil,
+        recipient: FederatedPerson? = nil,
+        counts: FederatedCommentAggregates? = nil,
+        creator_banned_from_community: Bool? = nil,
+        subscribed: FederatedSubscribedType? = nil,
+        saved: Bool? = nil,
+        creator_blocked: Bool? = nil,
         my_vote: Int? = nil
     ) {
-        self.comment_reply = comment_reply
-        self.comment = comment
-        self.creator = creator
-        self.post = post
-        self.community = community
-        self.recipient = recipient
-        self.counts = counts
-        self.creator_banned_from_community = creator_banned_from_community
-        self.subscribed = subscribed
-        self.saved = saved
-        self.creator_blocked = creator_blocked
+        self.comment_reply = comment_reply ?? .mock
+        self.comment = comment ?? .mock
+        self.creator = creator ?? .mock
+        self.post = post ?? .mock
+        self.community = community ?? .mock
+        self.recipient = recipient ?? .mock
+        self.counts = counts ?? .mock
+        self.creator_banned_from_community = creator_banned_from_community ?? false
+        self.subscribed = subscribed ?? .notSubscribed
+        self.saved = saved ?? false
+        self.creator_blocked = creator_blocked ?? false
         self.my_vote = my_vote
     }
 }
@@ -203,17 +203,17 @@ public struct FederatedCommentReply: Codable, Identifiable, Hashable {
     public let published: String
 
     public init(
-        id: String,
-        recipient_id: String,
-        comment_id: String,
-        read: Bool,
-        published: String
+        id: String? = nil,
+        recipient_id: String? = nil,
+        comment_id: String? = nil,
+        read: Bool? = nil,
+        published: String? = nil
     ) {
-        self.id = id
-        self.recipient_id = recipient_id
-        self.comment_id = comment_id
-        self.read = read
-        self.published = published
+        self.id = id ?? "-1"
+        self.recipient_id = recipient_id ?? "-1"
+        self.comment_id = comment_id ?? "-1"
+        self.read = read ?? false
+        self.published = published ?? "-1"
     }
 }
 

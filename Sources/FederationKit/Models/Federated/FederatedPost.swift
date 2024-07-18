@@ -20,28 +20,28 @@ public struct FederatedPostResource: Codable, Hashable {
     public let my_vote: Int?
     public let unread_comments: Int
     
-    public init(post: FederatedPost,
-                creator: FederatedPerson,
-                community: FederatedCommunity,
-                creator_banned_from_community: Bool,
-                counts: FederatedPostAggregates,
-                subscribed: FederatedSubscribedType,
-                saved: Bool,
-                read: Bool,
-                creator_blocked: Bool,
+    public init(post: FederatedPost? = nil,
+                creator: FederatedPerson? = nil,
+                community: FederatedCommunity? = nil,
+                creator_banned_from_community: Bool? = nil,
+                counts: FederatedPostAggregates? = nil,
+                subscribed: FederatedSubscribedType? = nil,
+                saved: Bool? = nil,
+                read: Bool? = nil,
+                creator_blocked: Bool? = nil,
                 my_vote: Int? = nil,
-                unread_comments: Int) {
-        self.post = post
-        self.creator = creator
-        self.community = community
-        self.creator_banned_from_community = creator_banned_from_community
-        self.counts = counts
-        self.subscribed = subscribed
-        self.saved = saved
-        self.read = read
-        self.creator_blocked = creator_blocked
+                unread_comments: Int? = nil) {
+        self.post = post ?? .mock
+        self.creator = creator ?? .mock
+        self.community = community ?? .mock
+        self.creator_banned_from_community = creator_banned_from_community ?? false
+        self.counts = counts ?? .mock
+        self.subscribed = subscribed ?? .notSubscribed
+        self.saved = saved ?? false
+        self.read = read ?? false
+        self.creator_blocked = creator_blocked ?? false
         self.my_vote = my_vote
-        self.unread_comments = unread_comments
+        self.unread_comments = unread_comments ?? 0
     }
 }
 
@@ -70,50 +70,50 @@ public struct FederatedPost: Codable, Identifiable, Hashable {
     public let instanceType: FederatedInstanceType
     
     public init(
-        id: String,
-        name: String,
+        id: String?,
+        name: String?,
         url: String? = nil,
         body: String? = nil,
-        creator_id: String,
-        community_id: String,
-        removed: Bool,
-        locked: Bool,
-        published: String,
+        creator_id: String?,
+        community_id: String?,
+        removed: Bool?,
+        locked: Bool?,
+        published: String?,
         updated: String? = nil,
-        deleted: Bool,
-        nsfw: Bool,
+        deleted: Bool?,
+        nsfw: Bool?,
         embed_title: String? = nil,
         embed_description: String? = nil,
         thumbnail_url: String? = nil,
-        ap_id: String,
-        local: Bool,
+        ap_id: String?,
+        local: Bool?,
         embed_video_url: String? = nil,
-        language_id: Int,
-        featured_community: Bool,
-        featured_local: Bool,
+        language_id: Int?,
+        featured_community: Bool?,
+        featured_local: Bool?,
         instanceType: FederatedInstanceType
     ) {
-        self.id = id
-        self.name = name
+        self.id = id ?? "-1"
+        self.name = name ?? "unknown"
         self.url = url
         self.body = body
-        self.creator_id = creator_id
-        self.community_id = community_id
-        self.removed = removed
-        self.locked = locked
-        self.published = published
+        self.creator_id = creator_id ?? "-1"
+        self.community_id = community_id ?? "-1"
+        self.removed = removed ?? false
+        self.locked = locked ?? false
+        self.published = published ?? "-1"
         self.updated = updated
-        self.deleted = deleted
-        self.nsfw = nsfw
+        self.deleted = deleted ?? false
+        self.nsfw = nsfw ?? false
         self.embed_title = embed_title
         self.embed_description = embed_description
         self.thumbnail_url = thumbnail_url
-        self.ap_id = ap_id
-        self.local = local
+        self.ap_id = ap_id ?? "-1"
+        self.local = local ?? false
         self.embed_video_url = embed_video_url
-        self.language_id = language_id
-        self.featured_community = featured_community
-        self.featured_local = featured_local
+        self.language_id = language_id ?? -1
+        self.featured_community = featured_community ?? false
+        self.featured_local = featured_local ?? false
         self.instanceType = instanceType
     }
 }
@@ -135,34 +135,34 @@ public struct FederatedPostAggregates: Codable, Identifiable, Hashable {
     public let reblog_count: Int
 
     public init(
-        id: String,
-        post_id: String,
-        comments: Int,
-        score: Int,
-        upvotes: Int,
-        downvotes: Int,
-        published: String,
-        newest_comment_time_necro: String,
-        newest_comment_time: String,
-        featured_community: Bool,
-        featured_local: Bool,
-        hot_rank: Int,
-        hot_rank_active: Int,
+        id: String? = nil,
+        post_id: String? = nil,
+        comments: Int? = nil,
+        score: Int? = nil,
+        upvotes: Int? = nil,
+        downvotes: Int? = nil,
+        published: String? = nil,
+        newest_comment_time_necro: String? = nil,
+        newest_comment_time: String? = nil,
+        featured_community: Bool? = nil,
+        featured_local: Bool? = nil,
+        hot_rank: Int? = nil,
+        hot_rank_active: Int? = nil,
         reblog_count: Int = 0
     ) {
-        self.id = id
-        self.post_id = post_id
-        self.comments = comments
-        self.score = score
-        self.upvotes = upvotes
-        self.downvotes = downvotes
-        self.published = published
-        self.newest_comment_time_necro = newest_comment_time_necro
-        self.newest_comment_time = newest_comment_time
-        self.featured_community = featured_community
-        self.featured_local = featured_local
-        self.hot_rank = hot_rank
-        self.hot_rank_active = hot_rank_active
+        self.id = id ?? "-1"
+        self.post_id = post_id ?? "-1"
+        self.comments = comments ?? 0
+        self.score = score ?? 0
+        self.upvotes = upvotes ?? 0
+        self.downvotes = downvotes ?? 0
+        self.published = published ?? "-1"
+        self.newest_comment_time_necro = newest_comment_time_necro ?? ""
+        self.newest_comment_time = newest_comment_time ?? "-1"
+        self.featured_community = featured_community ?? false
+        self.featured_local = featured_local ?? false
+        self.hot_rank = hot_rank ?? -1
+        self.hot_rank_active = hot_rank_active ?? -1
         self.reblog_count = reblog_count
     }
 }

@@ -14,15 +14,15 @@ public struct FederatedSiteResource: Codable, Hashable {
     public let counts: FederatedSiteAggregates
 
     public init(
-        site: FederatedSite,
-        local_site: FederatedSiteDetails,
-        local_site_rate_limit: FederatedSiteRateLimit,
-        counts: FederatedSiteAggregates
+        site: FederatedSite? = nil,
+        local_site: FederatedSiteDetails? = nil,
+        local_site_rate_limit: FederatedSiteRateLimit? = nil,
+        counts: FederatedSiteAggregates? = nil
     ) {
-        self.site = site
-        self.local_site = local_site
-        self.local_site_rate_limit = local_site_rate_limit
-        self.counts = counts
+        self.site = site ?? .mock
+        self.local_site = local_site ?? .mock
+        self.local_site_rate_limit = local_site_rate_limit ?? .mock
+        self.counts = counts ?? .mock
     }
 }
 
@@ -43,35 +43,35 @@ public struct FederatedSite: Codable, Identifiable, Hashable {
     public let instance_id: Int
 
     public init(
-        id: Int,
-        name: String,
+        id: Int? = nil,
+        name: String? = nil,
         sidebar: String? = nil,
-        published: String,
+        published: String? = nil,
         updated: String? = nil,
         icon: String? = nil,
         banner: String? = nil,
         description: String? = nil,
-        actor_id: String,
-        last_refreshed_at: String,
-        inbox_url: String?,
+        actor_id: String? = nil,
+        last_refreshed_at: String? = nil,
+        inbox_url: String? = nil,
         private_key: String? = nil,
-        public_key: String,
-        instance_id: Int
+        public_key: String? = nil,
+        instance_id: Int? = nil
     ) {
-        self.id = id
-        self.name = name
+        self.id = id ?? -1
+        self.name = name ?? ""
         self.sidebar = sidebar
-        self.published = published
-        self.updated = updated
-        self.icon = icon
-        self.banner = banner
-        self.description = description
-        self.actor_id = actor_id
-        self.last_refreshed_at = last_refreshed_at
-        self.inbox_url = inbox_url
-        self.private_key = private_key
-        self.public_key = public_key
-        self.instance_id = instance_id
+        self.published = published ?? "-1"
+        self.updated = updated ?? "-1"
+        self.icon = icon ?? ""
+        self.banner = banner ?? "-1"
+        self.description = description ?? ""
+        self.actor_id = actor_id ?? "-1"
+        self.last_refreshed_at = last_refreshed_at ?? "-1"
+        self.inbox_url = inbox_url ?? ""
+        self.private_key = private_key ?? ""
+        self.public_key = public_key ?? "-1"
+        self.instance_id = instance_id ?? -1
     }
 }
 
@@ -88,27 +88,27 @@ public struct FederatedSiteAggregates: Codable, Identifiable, Hashable {
     public let users_active_half_year: Int
 
     public init(
-        id: Int,
-        site_id: Int,
-        users: Int,
-        posts: Int,
-        comments: Int,
-        communities: Int,
-        users_active_day: Int,
-        users_active_week: Int,
-        users_active_month: Int,
-        users_active_half_year: Int
+        id: Int? = nil,
+        site_id: Int? = nil,
+        users: Int? = nil,
+        posts: Int? = nil,
+        comments: Int? = nil,
+        communities: Int? = nil,
+        users_active_day: Int? = nil,
+        users_active_week: Int? = nil,
+        users_active_month: Int? = nil,
+        users_active_half_year: Int? = nil
     ) {
-        self.id = id
-        self.site_id = site_id
-        self.users = users
-        self.posts = posts
-        self.comments = comments
-        self.communities = communities
-        self.users_active_day = users_active_day
-        self.users_active_week = users_active_week
-        self.users_active_month = users_active_month
-        self.users_active_half_year = users_active_half_year
+        self.id = id ?? -1
+        self.site_id = site_id ?? -1
+        self.users = users ?? -1
+        self.posts = posts ?? -1
+        self.comments = comments ?? -1
+        self.communities = communities ?? -1
+        self.users_active_day = users_active_day ?? -1
+        self.users_active_week = users_active_week ?? -1
+        self.users_active_month = users_active_month ?? -1
+        self.users_active_half_year = users_active_half_year ?? -1
     }
 }
 
@@ -131,39 +131,39 @@ public struct FederatedSiteRateLimit: Codable, Identifiable, Hashable {
     public let updated: String?
 
     public init(
-        id: Int,
-        local_site_id: Int,
-        message: Int,
-        message_per_second: Int,
-        post: Int,
-        post_per_second: Int,
-        register: Int,
-        register_per_second: Int,
-        image: Int,
-        image_per_second: Int,
-        comment: Int,
-        comment_per_second: Int,
-        search: Int,
-        search_per_second: Int,
-        published: String,
+        id: Int? = nil,
+        local_site_id: Int? = nil,
+        message: Int? = nil,
+        message_per_second: Int? = nil,
+        post: Int? = nil,
+        post_per_second: Int? = nil,
+        register: Int? = nil,
+        register_per_second: Int? = nil,
+        image: Int? = nil,
+        image_per_second: Int? = nil,
+        comment: Int? = nil,
+        comment_per_second: Int? = nil,
+        search: Int? = nil,
+        search_per_second: Int? = nil,
+        published: String? = nil,
         updated: String? = nil
     ) {
-        self.id = id
-        self.local_site_id = local_site_id
-        self.message = message
-        self.message_per_second = message_per_second
-        self.post = post
-        self.post_per_second = post_per_second
-        self.register = register
-        self.register_per_second = register_per_second
-        self.image = image
-        self.image_per_second = image_per_second
-        self.comment = comment
-        self.comment_per_second = comment_per_second
-        self.search = search
-        self.search_per_second = search_per_second
-        self.published = published
-        self.updated = updated
+        self.id = id ?? -1
+        self.local_site_id = local_site_id ?? -1
+        self.message = message ?? -1
+        self.message_per_second = message_per_second ?? -1
+        self.post = post ?? -1
+        self.post_per_second = post_per_second ?? -1
+        self.register = register ?? -1
+        self.register_per_second = register_per_second ?? -1
+        self.image = image ?? -1
+        self.image_per_second = image_per_second ?? -1
+        self.comment = comment ?? -1
+        self.comment_per_second = comment_per_second ?? -1
+        self.search = search ?? -1
+        self.search_per_second = search_per_second ?? -1
+        self.published = published ?? "-1"
+        self.updated = updated ?? "-1"
     }
 }
 
@@ -193,53 +193,53 @@ public struct FederatedSiteDetails: Codable, Identifiable, Hashable {
     public let reports_email_admins: Bool
 
     public init(
-        id: Int,
-        site_id: Int,
-        site_setup: Bool,
-        enable_downvotes: Bool,
-        enable_nsfw: Bool,
-        community_creation_admin_only: Bool,
-        require_email_verification: Bool,
+        id: Int? = nil,
+        site_id: Int? = nil,
+        site_setup: Bool? = nil,
+        enable_downvotes: Bool? = nil,
+        enable_nsfw: Bool? = nil,
+        community_creation_admin_only: Bool? = nil,
+        require_email_verification: Bool? = nil,
         application_question: String? = nil,
-        private_instance: Bool,
-        default_theme: String,
-        default_post_listing_type: FederatedListingType,
+        private_instance: Bool? = nil,
+        default_theme: String? = nil,
+        default_post_listing_type: FederatedListingType? = nil,
         legal_information: String? = nil,
-        hide_modlog_mod_names: Bool,
-        application_email_admins: Bool,
+        hide_modlog_mod_names: Bool? = nil,
+        application_email_admins: Bool? = nil,
         slur_filter_regex: String? = nil,
-        actor_name_max_length: Int,
-        federation_enabled: Bool,
-        captcha_enabled: Bool,
-        captcha_difficulty: String,
-        published: String,
+        actor_name_max_length: Int? = nil,
+        federation_enabled: Bool? = nil,
+        captcha_enabled: Bool? = nil,
+        captcha_difficulty: String? = nil,
+        published: String? = nil,
         updated: String? = nil,
-        registration_mode: FederatedRegistrationType,
-        reports_email_admins: Bool
+        registration_mode: FederatedRegistrationType? = nil,
+        reports_email_admins: Bool? = nil
     ) {
-        self.id = id
-        self.site_id = site_id
-        self.site_setup = site_setup
-        self.enable_downvotes = enable_downvotes
-        self.enable_nsfw = enable_nsfw
-        self.community_creation_admin_only = community_creation_admin_only
-        self.require_email_verification = require_email_verification
+        self.id = id ?? -1
+        self.site_id = site_id ?? -1
+        self.site_setup = site_setup ?? false
+        self.enable_downvotes = enable_downvotes ?? false
+        self.enable_nsfw = enable_nsfw ?? false
+        self.community_creation_admin_only = community_creation_admin_only ?? false
+        self.require_email_verification = require_email_verification ?? false
         self.application_question = application_question
-        self.private_instance = private_instance
-        self.default_theme = default_theme
-        self.default_post_listing_type = default_post_listing_type
+        self.private_instance = private_instance ?? false
+        self.default_theme = default_theme ?? ""
+        self.default_post_listing_type = default_post_listing_type ?? .local
         self.legal_information = legal_information
-        self.hide_modlog_mod_names = hide_modlog_mod_names
-        self.application_email_admins = application_email_admins
+        self.hide_modlog_mod_names = hide_modlog_mod_names ?? false
+        self.application_email_admins = application_email_admins ?? false
         self.slur_filter_regex = slur_filter_regex
-        self.actor_name_max_length = actor_name_max_length
-        self.federation_enabled = federation_enabled
-        self.captcha_enabled = captcha_enabled
-        self.captcha_difficulty = captcha_difficulty
-        self.published = published
+        self.actor_name_max_length = actor_name_max_length ?? 0
+        self.federation_enabled = federation_enabled ?? false
+        self.captcha_enabled = captcha_enabled ?? true
+        self.captcha_difficulty = captcha_difficulty ?? "nani"
+        self.published = published ?? "-1"
         self.updated = updated
-        self.registration_mode = registration_mode
-        self.reports_email_admins = reports_email_admins
+        self.registration_mode = registration_mode ?? .closed
+        self.reports_email_admins = reports_email_admins ?? false
     }
 }
 

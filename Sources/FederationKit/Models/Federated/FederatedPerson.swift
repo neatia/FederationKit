@@ -12,9 +12,9 @@ public struct FederatedPersonResource: Codable, Hashable {
     public var person: FederatedPerson
     public var counts: FederatedPersonAggregates
     
-    public init(person: FederatedPerson, counts: FederatedPersonAggregates) {
-        self.person = person
-        self.counts = counts
+    public init(person: FederatedPerson? = nil, counts: FederatedPersonAggregates? = nil) {
+        self.person = person ?? .mock
+        self.counts = counts ?? .mock
     }
 }
 
@@ -40,45 +40,45 @@ public struct FederatedPerson: Codable, Identifiable, Hashable {
     public let instanceType: FederatedInstanceType
     
     public init(
-        id: String,
-        name: String,
+        id: String? = nil,
+        name: String? = nil,
         display_name: String? = nil,
         avatar: String? = nil,
-        banned: Bool,
-        published: String,
+        banned: Bool? = nil,
+        published: String? = nil,
         updated: String? = nil,
-        actor_id: String,
+        actor_id: String? = nil,
         bio: String? = nil,
-        local: Bool,
+        local: Bool? = nil,
         banner: String? = nil,
-        deleted: Bool,
-        inbox_url: String?,
+        deleted: Bool? = nil,
+        inbox_url: String? = nil,
         matrix_user_id: String? = nil,
-        admin: Bool,
-        bot_account: Bool,
+        admin: Bool? = nil,
+        bot_account: Bool? = nil,
         ban_expires: String? = nil,
-        instance_id: String,
-        instanceType: FederatedInstanceType
+        instance_id: String? = nil,
+        instanceType: FederatedInstanceType? = nil
     ) {
-        self.id = id
-        self.name = name
+        self.id = id ?? "-1"
+        self.name = name ?? "mock name"
         self.display_name = display_name
         self.avatar = avatar
-        self.banned = banned
-        self.published = published
+        self.banned = banned ?? false
+        self.published = published ?? "-1"
         self.updated = updated
-        self.actor_id = actor_id
+        self.actor_id = actor_id ?? "-1"
         self.bio = bio
-        self.local = local
+        self.local = local ?? false
         self.banner = banner
-        self.deleted = deleted
+        self.deleted = deleted ?? false
         self.inbox_url = inbox_url
         self.matrix_user_id = matrix_user_id
-        self.admin = admin
-        self.bot_account = bot_account
+        self.admin = admin ?? false
+        self.bot_account = bot_account ?? false
         self.ban_expires = ban_expires
-        self.instance_id = instance_id
-        self.instanceType = instanceType
+        self.instance_id = instance_id ?? "-1"
+        self.instanceType = instanceType ?? .unknown
     }
 }
 
@@ -149,21 +149,21 @@ public struct FederatedPersonAggregates: Codable, Identifiable, Hashable {
     public let followers_count: Int
 
     public init(
-        id: String,
-        person_id: String,
-        post_count: Int,
-        post_score: Int,
-        comment_count: Int,
-        comment_score: Int,
+        id: String? = nil,
+        person_id: String? = nil,
+        post_count: Int? = nil,
+        post_score: Int? = nil,
+        comment_count: Int? = nil,
+        comment_score: Int? = nil,
         following_count: Int = 0,
         followers_count: Int = 0
     ) {
-        self.id = id
-        self.person_id = person_id
-        self.post_count = post_count
-        self.post_score = post_score
-        self.comment_count = comment_count
-        self.comment_score = comment_score
+        self.id = id ?? "-1"
+        self.person_id = person_id ?? "-1"
+        self.post_count = post_count ?? 0
+        self.post_score = post_score ?? 0
+        self.comment_count = comment_count ?? 0
+        self.comment_score = comment_score ?? 0
         self.following_count = following_count
         self.followers_count = followers_count
     }
@@ -215,31 +215,31 @@ public struct FederatedPersonMentionResource: Codable, Hashable {
     public let my_vote: Int?
 
     public init(
-        person_mention: FederatedPersonMention,
-        comment: FederatedComment,
-        creator: FederatedPerson,
-        post: FederatedPost,
-        community: FederatedCommunity,
-        recipient: FederatedPerson,
-        counts: FederatedCommentAggregates,
-        creator_banned_from_community: Bool,
-        subscribed: FederatedSubscribedType,
-        saved: Bool,
-        creator_blocked: Bool,
+        person_mention: FederatedPersonMention? = nil,
+        comment: FederatedComment? = nil,
+        creator: FederatedPerson? = nil,
+        post: FederatedPost? = nil,
+        community: FederatedCommunity? = nil,
+        recipient: FederatedPerson? = nil,
+        counts: FederatedCommentAggregates? = nil,
+        creator_banned_from_community: Bool? = nil,
+        subscribed: FederatedSubscribedType? = nil,
+        saved: Bool? = nil,
+        creator_blocked: Bool? = nil,
         my_vote: Int? = nil
     ) {
-        self.person_mention = person_mention
-        self.comment = comment
-        self.creator = creator
-        self.post = post
-        self.community = community
-        self.recipient = recipient
-        self.counts = counts
-        self.creator_banned_from_community = creator_banned_from_community
-        self.subscribed = subscribed
-        self.saved = saved
-        self.creator_blocked = creator_blocked
-        self.my_vote = my_vote
+        self.person_mention = person_mention ?? .mock
+        self.comment = comment ?? .mock
+        self.creator = creator ?? .mock
+        self.post = post ?? .mock
+        self.community = community ?? .mock
+        self.recipient = recipient ?? .mock
+        self.counts = counts ?? .mock
+        self.creator_banned_from_community = creator_banned_from_community ?? false
+        self.subscribed = subscribed ?? .notSubscribed
+        self.saved = saved ?? false
+        self.creator_blocked = creator_blocked ?? false
+        self.my_vote = my_vote ?? 0
     }
 }
 
@@ -251,17 +251,17 @@ public struct FederatedPersonMention: Codable, Identifiable, Hashable {
     public let published: String
 
     public init(
-        id: String,
-        recipient_id: String,
-        comment_id: String,
-        read: Bool,
-        published: String
+        id: String? = nil,
+        recipient_id: String? = nil,
+        comment_id: String? = nil,
+        read: Bool? = nil,
+        published: String? = nil
     ) {
-        self.id = id
-        self.recipient_id = recipient_id
-        self.comment_id = comment_id
-        self.read = read
-        self.published = published
+        self.id = id ?? "-1"
+        self.recipient_id = recipient_id ?? "-1"
+        self.comment_id = comment_id ?? "-1"
+        self.read = read ?? false
+        self.published = published ?? "-1"
     }
 }
 

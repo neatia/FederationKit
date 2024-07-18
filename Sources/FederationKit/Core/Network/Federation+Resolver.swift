@@ -117,10 +117,12 @@ struct FetchResolver {
             let lemmy: Lemmy = .init(apiUrl: community?.actor_id.host ?? "")
             let resolved = await lemmy.resolveURL(post?.ap_id ?? "", auth: "")
             
-            resolver = .init(useBase: false,
-                             actor: community?.actor_id,
-                             id: post?.id.asInt,
-                             sourceId: resolved?.post?.post.id)
+            resolver = FetchResolver(
+                useBase: false,
+                actor: community?.actor_id,
+                id: post?.id.asInt,
+                sourceId: resolved?.post?.post?.id ?? -1
+            )
         case .peer(let host):
             let sourceId: Int?
             if host == post?.ap_id.host {

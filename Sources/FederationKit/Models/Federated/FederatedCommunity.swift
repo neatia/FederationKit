@@ -15,15 +15,15 @@ public struct FederatedCommunityResource: Codable, Hashable {
     public let counts: FederatedCommunityAggregates
 
     public init(
-        community: FederatedCommunity,
-        subscribed: FederatedSubscribedType,
-        blocked: Bool,
-        counts: FederatedCommunityAggregates
+        community: FederatedCommunity? = nil,
+        subscribed: FederatedSubscribedType? = nil,
+        blocked: Bool? = nil,
+        counts: FederatedCommunityAggregates? = nil
     ) {
-        self.community = community
-        self.subscribed = subscribed
-        self.blocked = blocked
-        self.counts = counts
+        self.community = community ?? .mock
+        self.subscribed = subscribed ?? .notSubscribed
+        self.blocked = blocked ?? false
+        self.counts = counts ?? .mock
     }
 }
 
@@ -98,45 +98,45 @@ public struct FederatedCommunity: Codable, Identifiable, Hashable {
     public var ap_id: String? = nil
 
     public init(
-        id: String,
-        name: String,
-        title: String,
+        id: String? = nil,
+        name: String? = nil,
+        title: String? = nil,
         description: String? = nil,
-        removed: Bool,
-        published: String,
+        removed: Bool? = nil,
+        published: String? = nil,
         updated: String? = nil,
-        deleted: Bool,
-        nsfw: Bool,
-        actor_id: String,
-        local: Bool,
+        deleted: Bool? = nil,
+        nsfw: Bool? = nil,
+        actor_id: String? = nil,
+        local: Bool? = nil,
         icon: String? = nil,
         banner: String? = nil,
-        followers_url: String?,
-        inbox_url: String?,
-        hidden: Bool,
-        posting_restricted_to_mods: Bool,
-        instance_id: String,
-        instanceType: FederatedInstanceType
+        followers_url: String? = nil,
+        inbox_url: String? = nil,
+        hidden: Bool? = nil,
+        posting_restricted_to_mods: Bool? = nil,
+        instance_id: String? = nil,
+        instanceType: FederatedInstanceType? = nil
     ) {
-        self.id = id
-        self.name = name
-        self.title = title
-        self.description = description
-        self.removed = removed
-        self.published = published
-        self.updated = updated
-        self.deleted = deleted
-        self.nsfw = nsfw
-        self.actor_id = actor_id
-        self.local = local
+        self.id = id ?? "-1"
+        self.name = name ?? "mock name"
+        self.title = title ?? "mock title"
+        self.description = description ?? "mock description"
+        self.removed = removed ?? false
+        self.published = published ?? "-1"
+        self.updated = updated ?? "-1"
+        self.deleted = deleted ?? false
+        self.nsfw = nsfw ?? false
+        self.actor_id = actor_id ?? "-1"
+        self.local = local ?? false
         self.icon = icon
         self.banner = banner
         self.followers_url = followers_url
         self.inbox_url = inbox_url
-        self.hidden = hidden
-        self.posting_restricted_to_mods = posting_restricted_to_mods
-        self.instance_id = instance_id
-        self.instanceType = instanceType
+        self.hidden = hidden ?? false
+        self.posting_restricted_to_mods = posting_restricted_to_mods ?? false
+        self.instance_id = instance_id ?? "-1"
+        self.instanceType = instanceType ?? .unknown
     }
 }
 
@@ -154,29 +154,29 @@ public struct FederatedCommunityAggregates: Codable, Identifiable, Hashable {
     public let hot_rank: Int
 
     public init(
-        id: String,
-        community_id: CommunityId,
-        subscribers: Int,
-        posts: Int,
-        comments: Int,
-        published: String,
-        users_active_day: Int,
-        users_active_week: Int,
-        users_active_month: Int,
-        users_active_half_year: Int,
-        hot_rank: Int
+        id: String? = nil,
+        community_id: CommunityId? = nil,
+        subscribers: Int? = nil,
+        posts: Int? = nil,
+        comments: Int? = nil,
+        published: String? = nil,
+        users_active_day: Int? = nil,
+        users_active_week: Int? = nil,
+        users_active_month: Int? = nil,
+        users_active_half_year: Int? = nil,
+        hot_rank: Int? = nil
     ) {
-        self.id = id
-        self.community_id = community_id
-        self.subscribers = subscribers
-        self.posts = posts
-        self.comments = comments
-        self.published = published
-        self.users_active_day = users_active_day
-        self.users_active_week = users_active_week
-        self.users_active_month = users_active_month
-        self.users_active_half_year = users_active_half_year
-        self.hot_rank = hot_rank
+        self.id = id ?? "-1"
+        self.community_id = community_id ?? -1
+        self.subscribers = subscribers ?? 0
+        self.posts = posts ?? 0
+        self.comments = comments ?? 0
+        self.published = published ?? "-1"
+        self.users_active_day = users_active_day ?? 0
+        self.users_active_week = users_active_week ?? 0
+        self.users_active_month = users_active_month ?? 0
+        self.users_active_half_year = users_active_half_year ?? 0
+        self.hot_rank = hot_rank ?? 0
     }
 }
 
